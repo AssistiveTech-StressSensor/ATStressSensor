@@ -163,7 +163,8 @@ extension Questionnaire {
         intro.title = "Welcome"
         formSteps.append(intro)
 
-        let selectedQuestions = sampleQuestions(n: 2, differentCategories: true)
+        let nQuestions = Constants.questionnaireLength
+        let selectedQuestions = sampleQuestions(n: nQuestions, differentCategories: true)
 
         for (id, question) in selectedQuestions {
             formSteps.append(question.asFormStep(id: id))

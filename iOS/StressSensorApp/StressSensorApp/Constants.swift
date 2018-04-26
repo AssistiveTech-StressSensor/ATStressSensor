@@ -13,8 +13,11 @@ struct Constants {
     /// The developer API key provided by Empatica
     static let empaticaApiKey = "6d8eb0b6edac40f7a5a510a7754174ec"
 
-    /// Minimum number of samples per class required to train the model
+    /// Minimum number of samples per class required to train the stress model
     static let minSamplesPerClass = 5
+
+    /// Number of random questions to be asked to train the energy model
+    static let questionnaireLength = 2
 
     static let modelWindowLength: TimeInterval = 2*60.0 // 2 minutes
 
