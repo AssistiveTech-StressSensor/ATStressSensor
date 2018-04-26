@@ -17,7 +17,6 @@ struct Questionnaire: Codable {
     let categories: [Category]
 
     enum TestType: String, Codable {
-        // FIXME: Replace 'custom' with actual test name
         case custom = "custom"
     }
 
@@ -54,7 +53,7 @@ extension Questionnaire.Question.Option {
 
     var asTextChoice: ORKTextChoice {
         return ORKTextChoice(
-            text: "\(Int(round(value))) \(text ?? "")",
+            text: "[\(Int(round(value)))]  \(text ?? "")",
             detailText: nil,
             value: value as NSNumber,
             exclusive: true
@@ -108,10 +107,17 @@ extension Questionnaire {
         return Questionnaire.fromFile(path)!
     }()
 
-    // FIXME: Replace 'custom' with actual test name
     func evaluateForCustomTest(_ result: ORKResult) -> QuestionnaireScore {
-        // TODO: Return actual score
-        return 0.0
+
+        var total = 0.0
+        let stepResults = (result as! ORKTaskResult).results as! [ORKStepResult]
+        for step in stepResults {
+            let questionResult = step.firstResult as? ORKChoiceQuestionResult
+            let ans = questionResult?.choiceAnswers?.first as? NSNumber
+            total += ans?.doubleValue ?? 0.0
+        }
+        // Should we multiply this value by a factor?
+        return total
     }
 
     func evaluate(_ result: ORKResult) -> QuestionnaireScore {
@@ -125,11 +131,24 @@ extension Questionnaire {
     func sampleQuestions(n: Int, differentCategories: Bool) -> [String: Question] {
 
         let shuffledKeys = Array(allQuestions.keys).shuffled
+        if shuffledKeys.count < n {
+            fatalError("Cannot sample \(n) questions out of a questionnaire of \(shuffledKeys.count)")
+        }
 
-        if false && differentCategories {
-            // let shuffledCats = Array(categories).shuffled
-            // TODO: ...
-            return [:]
+        if differentCategories {
+            var selectedQuestions = [String: Question]()
+            var includedCatIDs = [String]()
+            for key in shuffledKeys {
+                let catID = key.components(separatedBy: ".").first!
+                if includedCatIDs.contains(catID) { continue }
+                if selectedQuestions.count >= n { break }
+                selectedQuestions[key] = allQuestions[key]
+                includedCatIDs.append(catID)
+            }
+            if selectedQuestions.count < n {
+                fatalError("Questionnaire does not have enough questions or categories for the given sampling settings")
+            }
+            return selectedQuestions
         } else {
             let selectedKeys = shuffledKeys[0..<n]
             return allQuestions.filter { selectedKeys.contains($0.key) }
@@ -144,7 +163,7 @@ extension Questionnaire {
         intro.title = "Welcome"
         formSteps.append(intro)
 
-        let selectedQuestions = sampleQuestions(n: 5, differentCategories: true)
+        let selectedQuestions = sampleQuestions(n: 2, differentCategories: true)
 
         for (id, question) in selectedQuestions {
             formSteps.append(question.asFormStep(id: id))
