@@ -26,5 +26,5 @@ before_install:
 
 script:
   - set -o pipefail
-  - ./iOS/install_libs.sh
+  - ./iOS/setup_project.sh
   - xcodebuild -workspace ./iOS/StressSensorApp/StressSensorApp.xcworkspace -scheme StressSensorAppTravis -sdk iphonesimulator11.2 -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' build test | xcpretty -c

@@ -17,3 +17,19 @@ if [ ! -f .lock ]; then
 fi
 
 ls -la "$parent_path/StressSensorApp/ThirdPartyLibraries"
+
+
+cd "$parent_path/StressSensorApp/StressSensorApp"
+
+if [ ! -d Credentials ]; then
+	mkdir ./Credentials
+fi
+cd ./Credentials
+
+if [ ! -f .lock ]; then
+	rm -r ./*
+	cp ../../../DummyCredentials/* ./.
+	touch .lock
+fi
+
+ls -la "$parent_path/StressSensorApp/StressSensorApp/Credentials"

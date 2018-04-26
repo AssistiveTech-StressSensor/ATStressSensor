@@ -55,7 +55,7 @@ class ModelLogger {
             )
 
         } else {
-            print("Firebase auth: skipped (Credentials not found)")
+            print("Firebase auth: skipped (credentials not found)")
         }
     }
 
