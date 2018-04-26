@@ -112,7 +112,7 @@ extension DeviceManager: EmpaticaDelegate {
     }
 
     func didDiscoverDevices(_ array: [Any]!) {
-        let devices = array.flatMap { $0 as? EmpaticaDeviceManager }
+        let devices = array.compactMap { $0 as? EmpaticaDeviceManager }
 
         if devices.isEmpty {
             print("No devices found in range.")
