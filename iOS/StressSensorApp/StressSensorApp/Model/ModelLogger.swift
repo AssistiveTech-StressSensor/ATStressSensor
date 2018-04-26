@@ -36,27 +36,33 @@ class ModelLogger {
 
     static func setup() {
 
-        FirebaseApp.configure()
+        if Secret.isValid {
 
-        Auth.auth().signIn(
-            withEmail: Constants.Firebase.dummyEmail,
-            password: Constants.Firebase.dummyPassword,
-            completion: { user, error in
+            FirebaseApp.configure()
 
-                if let error = error {
-                    print("Firebase auth: failure (\(error.localizedDescription))")
-                } else {
-                    print("Firebase auth: success")
-                    ModelLogger.createUserIfNeeded()
+            Auth.auth().signIn(
+                withEmail: Constants.Firebase.dummyEmail,
+                password: Constants.Firebase.dummyPassword,
+                completion: { user, error in
+
+                    if let error = error {
+                        print("Firebase auth: failure (\(error.localizedDescription))")
+                    } else {
+                        print("Firebase auth: success")
+                        ModelLogger.createUserIfNeeded()
+                    }
                 }
-            }
-        )
+            )
+
+        } else {
+            print("Firebase auth: skipped (Credentials not found)")
+        }
     }
 
     static func getCurrentLoggedEntries(_ completion: @escaping (Int) -> Void) {
 
         guard let userID = userID else {
-            return completion(0)
+            return completion(-1)
         }
 
         let ref = Database.database().reference(withPath: "users/\(userID)/data")
