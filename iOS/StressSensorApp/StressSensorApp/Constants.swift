@@ -29,7 +29,7 @@ struct Constants {
     }()
 
     struct Firebase {
-        static let dummyEmail = "xxxx" // Secret.firebaseEmail
-        static let dummyPassword = "xxxx" // Secret.firebasePassword
+        static let dummyEmail = Secret.firebaseEmail
+        static let dummyPassword = Secret.firebasePassword
     }
 }

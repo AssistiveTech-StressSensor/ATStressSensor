@@ -55,6 +55,21 @@ extension Array {
         if isEmpty { return nil }
         return self[Int(arc4random_uniform(UInt32(count)))]
     }
+
+    mutating func shuffle() {
+        guard self.count >= 1 else { return }
+
+        for i in (1..<self.count).reversed() {
+            let j = Array<Int>(0...i).random()!
+            self.swapAt(j, i)
+        }
+    }
+
+    var shuffled : [Element] {
+        var elements = self
+        elements.shuffle()
+        return elements
+    }
 }
 
 extension String {

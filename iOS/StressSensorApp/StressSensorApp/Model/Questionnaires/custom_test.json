@@ -1,0 +1,798 @@
+{
+	"test_type": "custom",
+	"categories": [
+		{
+			"name": "CAPA (Control, Attitude, Performance, Achievement)",		
+			"questions": [
+				{
+					"text": "Do you feel like you are able to solve important things?",
+					"options": [
+						{
+							"text": "Yes, I am able to solve everything",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, I am able to solve most things",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I am not able to solve any important thing",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Could you manage efficiently important changes right now?",
+					"options": [
+						{
+							"text": "Yes, I could manage important changes without problems",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, I could manage some important changes",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot handle any important change",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel able to handle personal problems?",
+					"options": [
+						{
+							"text": "Yes, I could handle personal problems",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, I could handle personal problems",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot handle any personal problems",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do things go as you expect?",
+					"options": [
+						{
+							"text": "Yes, everything is going as I spected",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Some things go as planned while others do not",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, nothing goes as planned",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Is there something that did not go as you want?",
+					"options": [
+						{
+							"text": "No, everything goes as planned",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Some things are not going as planned",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, nothing goes as planned",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you have control over things?",
+					"options": [
+						{
+							"text": "Yes, I control everything",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I have control over some things, I do not over others",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, everything is out of my control",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel angry because something happened that you cannot control?",
+					"options": [
+						{
+							"text": "No, I do not feel angry at all",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I feel angry but I can control it",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I feel angry beacuse I lost control",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Are you planning too many things?",
+					"options": [
+						{
+							"text": "No, I am planning what I can handle",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, I am not sure if I can acomplish everything",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I planned too many things, I am saturated",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you have control over your time?",
+					"options": [
+						{
+							"text": "Yes, I control my time",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I have control over my time partially",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot manage my time at all",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Is there anything that is becoming too difficult (for you) to handle?",
+					"options": [
+						{
+							"text": "No, everything is easy to handle",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I am struggling to solve some tasks",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I find impossible to solve something",
+							"value": 5.0
+						},
+					],
+				},
+			],
+		},
+		{
+			"name": "Mental capabilities",
+			"questions": [
+				{
+					"text": "Are you able to keep your thoughts together and concentrate?",
+					"options": [
+						{
+							"text": "Yes, I can concentrate completelly",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I can concentrate but I might lost the attention time to time",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot concentrate in anything",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Can you focus properly?",
+					"options": [
+						{
+							"text": "Yes, my focus is where I want",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I can focus but it is a bit difuse",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot focus",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "What is your concentration level right now?",
+					"options": [
+						{
+							"text": "Complete",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Medium",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No concentration",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you manage to read a complex text right now?",
+					"options": [
+						{
+							"text": "Yes, I can read a complex text without problems",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Partially, I can read complex texts with some difficulty",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot read a complex text",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "What is your ability in remembering things?",
+					"options": [
+						{
+							"text": "I remember everything",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I remember things but not everything I want",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot remember anything",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you easily remember names right now?",
+					"options": [
+						{
+							"text": "I remember every name I know",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I remember some of the names I know",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot remember names",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "How quickly can you remember your last meal?",
+					"options": [
+						{
+							"text": "Less than 20 seconds",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "It takes me a while",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "I cannot remember my last meal",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you forget things more often than before?",
+					"options": [
+						{
+							"text": "No, I do not forget things",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Partially, I forget some things",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I am forgetting everything",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Are you mentally tired?",
+					"options": [
+						{
+							"text": "No, my head is at 100%",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Partially",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I am completelly tired",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel like you are capable to solve your tasks?",
+					"options": [
+						{
+							"text": "Yes, I can solve all my tasks",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, I could solve some of my tasks",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot solve any of my tasks",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel capable to interact with other people?",
+					"options": [
+						{
+							"text": "Yes, social activities are not a challenge right now",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Partially, I could handle some conversations",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot handle a proper conversation",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Does it require more energy to think than usual?",
+					"options": [
+						{
+							"text": "No, nothing requires more energy than usual",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Some things require more thinking than usually",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, thinking requires all my energy right now",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel slow in thought?",
+					"options": [
+						{
+							"text": "No, my thoughts are fresh",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, some thoughts come slower than usually",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Are tasks taking more time than usual to solve?",
+					"options": [
+						{
+							"text": "No, all taks require its normal time",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Some tasks require more time than usual",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, all tasks require more time",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Does your mind recover quickly from effort?",
+					"options": [
+						{
+							"text": "Yes, my mind is fresh sortly after efforts",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "My mind requires sligthly more time to recover than usual",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, my mind needs much more time to recover",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel you need a rest?",
+					"options": [
+						{
+							"text": "No",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you think your rest recharges your batteries?",
+					"options": [
+						{
+							"text": "Yes, my rest charged my batteries",
+							"value": 0.0
+						},
+						{
+							"text": null,
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "My rest charged partially my batteries",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No my batteries are empty",
+							"value": 5.0
+						},
+					],
+				},
+			],
+		}
+	]
+}
