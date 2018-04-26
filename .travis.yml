@@ -1,0 +1,30 @@
+language: swift
+osx_image: xcode9.2
+podfile: ./iOS/StressSensorApp/Podfile
+
+notifications:
+  - email: false
+
+branches:
+  only:
+    - master
+
+cache:
+  cocoapods: true
+  directories:
+    - /home/travis/.rvm/
+
+env:
+  - LC_CTYPE=en_US.UTF-8 LANG=en_US.UTF-8
+
+before_install:
+  - rvm install ruby-2.2.2
+  - gem install cocoapods
+  - gem install xcpretty -N
+# - brew update
+# - brew install swiftlint || true
+
+script:
+  - set -o pipefail
+  - ./iOS/install_libs.sh
+  - xcodebuild -workspace ./iOS/StressSensorApp/StressSensorApp.xcworkspace -scheme StressSensorAppTravis -sdk iphonesimulator11.2 -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' build test | xcpretty -c
