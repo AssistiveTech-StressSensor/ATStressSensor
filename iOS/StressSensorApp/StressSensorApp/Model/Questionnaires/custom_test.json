@@ -685,6 +685,521 @@
 					],
 				},
 			],
+		},
+		{
+			"name": "Physical capabilities",
+			"questions": [
+				{
+					"text": "Do you feel physically tired?",
+					"options": [
+						{
+							"text": "No, I am full of energy",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Partially, I feel a bit tired",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I am really tired",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel like you have enough energy to handle your physical tasks?",
+					"options": [
+						{
+							"text": "Yes, I can do any physical activitie",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, I could handle most of physical activities",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I cannot handle any physical activitie",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Are sensible to sounds?",
+					"options": [
+						{
+							"text": "No, sounds do not mean somethign special",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Some sounds might affect me",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, sounds disturb me",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Are you sensible to light?",
+					"options": [
+						{
+							"text": "No, illumination is not a problem",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Some lights disturb me",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I can't stand the ligths arround me",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Does noise disturb you?",
+					"options": [
+						{
+							"text": "No, no sound could bother me",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "The level of noise is increasing a starts to bother me",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I cannot stand this noise",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "How sensitive to external perceptions do you feel?",
+					"options": [
+						{
+							"text": "Nothing at all",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Some external perceptions affect me",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Every perception saturates me right now",
+							"value": 5.0
+						},
+					],
+				},
+			],
+		},
+		{
+			"name":"Sleep",
+			"questions": [
+				{
+					"text": "How did you sleep?",
+					"options": [
+						{
+							"text": "Incredibly well",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Normal",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Awfull",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "How good did you sleep?",
+					"options": [
+						{
+							"text": "Great",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Normal",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Horrible",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Did you feel rested when you woke up?",
+					"options": [
+						{
+							"text": "Yes, I am full of energy",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Partially, I feel a bit tired",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I am really tired",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you think you had enough sleeping hours?",
+					"options": [
+						{
+							"text": "Yes, more than enough",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, I could sleep more, but I do not feel tired",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I need to sleep",
+							"value": 5.0
+						},
+					],
+				},
+			],
+		},
+		{
+			"name": "Emotivity",
+			"questons": [
+				{
+					"text": "Do you feel upset because of something that happened unexpectedly?",
+					"options": [
+						{
+							"text": "No, I am as usual",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "There is something that might have affected me",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I feel upset because something happened",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel nervous or stressed?",
+					"options": [
+						{
+							"text": "No",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, I feel a bit of stress",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Are you having a hard time managing stress?",
+					"options": [
+						{
+							"text": "No, if I get stressed I can manage it",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, but I think I could manage it ",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I cannot manage my stress",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel comfortable doing many things at the same time?",
+					"options": [
+						{
+							"text": "Yes, I am multitask",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Partially, I could handle various things but not many",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I do not feel comfortable at all",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you feel comfortable doing things under time pressure?",
+					"options": [
+						{
+							"text": "Yes, time pressure is not an inconvenient",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, but I might need more time",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "No, I do not feel comfortable at all",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "How much irritated are you?",
+					"options": [
+						{
+							"text": "Nothing",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "A little bit",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "I am really irritated",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "How easily irritable do you feel?",
+					"options": [
+						{
+							"text": "I do not feel irritable",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I might get irritated suddenly",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Everything irritates me right now",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "How easily angry do you feel?",
+					"options": [
+						{
+							"text": "Nothing, I cannot get agry right now",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "I could get angry if something serious happens",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Everything infuriates me",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Do you get more angry or provoked than usual?",
+					"options": [
+						{
+							"text": "No, nothing can provoke me",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Some things agry or provoke me more than usual",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Everything provokes or angers me",
+							"value": 5.0
+						},
+					],
+				},
+				{
+					"text": "Are you feeling more emotional than usual?",
+					"options": [
+						{
+							"text": "No",
+							"value": 1.0
+						},
+						{
+							"text": null,
+							"value": 2.0
+						},
+						{
+							"text": "Maybe, some things might affect me emotionally more than often",
+							"value": 3.0
+						},
+						{
+							"text": null,
+							"value": 4.0
+						},
+						{
+							"text": "Yes, I am feeling more emotional than usual",
+							"value": 5.0
+						},
+					],
+				},
+			]
 		}
 	]
 }
