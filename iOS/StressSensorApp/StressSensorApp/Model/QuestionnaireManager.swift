@@ -36,20 +36,18 @@ class QuestionnaireManager: NSObject {
 
         if let score = score {
 
-            let sample = EnergyModel.main.addSample(snapshot: snapshot, for: score)
+            let energyLevel = EnergyLevel(score)
+            let sample = EnergyModel.main.addSample(snapshot: snapshot, for: energyLevel)
 
-            // TODO: log data to remote server
-            /*
-                ModelLogger.logEnergy(
-                    snapshot: snapshot,
-                    sample: sample,
-                    score: score
-                )
-            */
+            ModelLogger.logEnergy(
+                snapshot: snapshot,
+                sample: sample,
+                energyLevel: energyLevel
+            )
 
             let alert = UIAlertController(
                 title: "Awesome!",
-                message: "(score: \(score))",
+                message: "(energy level: \(energyLevel))",
                 preferredStyle: .alert
             )
 

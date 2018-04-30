@@ -34,6 +34,14 @@ class ModelLogger {
         let timestamp: TimeInterval
     }
 
+    private struct EnergyEntry: Codable {
+        let snapshot: SignalsSnapshot
+        let sample: ModelSample
+        let label: EnergyLevel
+        let user_id: String
+        let timestamp: TimeInterval
+    }
+
     static func setup() {
 
         if Secret.isValid {
@@ -119,6 +127,32 @@ class ModelLogger {
         let jsString = String(data: jsData, encoding: .utf8)!
 
         let dataSampleRef = userRef.child("data").childByAutoId()
+
+        dataSampleRef.updateChildValues([
+            "js_data": jsString,
+            "timestamp": now
+        ])
+    }
+
+    static func logEnergy(snapshot: SignalsSnapshot, sample: ModelSample, energyLevel: EnergyLevel) {
+
+        guard canLog, let userID = userID else { return }
+
+        let userRef = Database.database().reference(withPath: "users/\(userID)")
+        let now = Date().timeIntervalSince1970
+
+        let entry = EnergyEntry(
+            snapshot: snapshot,
+            sample: sample,
+            label: energyLevel,
+            user_id: userID,
+            timestamp: now
+        )
+
+        guard let jsData = try? JSONEncoder().encode(entry) else { return }
+        let jsString = String(data: jsData, encoding: .utf8)!
+
+        let dataSampleRef = userRef.child("energy_data").childByAutoId()
 
         dataSampleRef.updateChildValues([
             "js_data": jsString,
