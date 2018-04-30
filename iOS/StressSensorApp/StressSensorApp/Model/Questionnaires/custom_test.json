@@ -948,7 +948,7 @@
 		},
 		{
 			"name": "Emotivity",
-			"questons": [
+			"questions": [
 				{
 					"text": "Do you feel upset because of something that happened unexpectedly?",
 					"options": [
