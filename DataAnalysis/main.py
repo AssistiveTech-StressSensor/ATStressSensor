@@ -59,13 +59,12 @@ def balance_dataset(X, y):
     y_to_dupl = NOT_STRESSED if n_0 < n_1 else STRESSED
 
     X_new = np.zeros((abs_diff, X.shape[1]))
+    y_new = np.ones([abs_diff]) * y_to_dupl
+
     for i in range(abs_diff):
         idx = np.random.randint(X_to_dupl.shape[0], size=1)
         sample = X_to_dupl[idx]
         X_new[i] = sample
-
-    X_new = np.array(X_new)
-    y_new = np.ones([abs_diff]) * y_to_dupl
 
     X_new = np.concatenate((X, X_new))
     y_new = np.concatenate((y, y_new))
