@@ -3,10 +3,17 @@
 ## Build generated
 build/
 DerivedData/
+
+## CocoaPods
 Pods/
 Podfile.lock
+
+## Private or third-party files
 ThirdPartyLibraries/
 Credentials/
+
+## JetBrains
+.idea/
 
 ## Various settings
 *.pbxuser
