@@ -19,6 +19,21 @@ struct ModelSample: Codable {
     let timestampBeg: TimeInterval
     let timestampEnd: TimeInterval
 
+    /*
+     * This should have been implemented from the beginning.
+     * Adding it now would require adapting serialized samples that are stored locally
+     * Could be considered in the future
+     *
+    enum CodingKeys: String, CodingKey {
+        case gsrMean = "gsr_mean"
+        case gsrLocals = "gsr_locals"
+        case hrMean = "hr_mean"
+        case hrMeanDerivative = "hr_mean_derivative"
+        case timestampBeg = "timestamp_beg"
+        case timestampEnd = "timestamp_end"
+    }
+    */
+
     /// Inits an empty sample. For test purposes only!
     private init() {
         self.gsrMean = 0.0

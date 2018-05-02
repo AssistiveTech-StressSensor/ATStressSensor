@@ -13,6 +13,7 @@ class SettingsViewController: UITableViewController {
     @IBOutlet weak var batteryLevelLabel: UILabel!
     @IBOutlet weak var userIdentifierLabel: UILabel!
     @IBOutlet weak var loggerLabel: UILabel!
+    @IBOutlet weak var loggerNicknameLabel: UILabel!
     @IBOutlet weak var loggerEntriesLabel: UILabel!
     @IBOutlet weak var connectDisconnectButton: UIButton!
     @IBOutlet weak var authenticatedLabel: UILabel!
@@ -29,6 +30,9 @@ class SettingsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         DeviceManager.main.statusChangeHandler = self.updateViews
+
+        let tapGR = UITapGestureRecognizer(target: self, action: #selector(changeLoggerNickname))
+        loggerNicknameLabel.superview?.addGestureRecognizer(tapGR)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -37,9 +41,9 @@ class SettingsViewController: UITableViewController {
     }
 
     func updateLoggedEntries() {
-        ModelLogger.getCurrentLoggedEntries { [weak self] count in
+        ModelLogger.getCurrentLoggedEntries { [weak self] (stressCount, energyCount) in
             DispatchQueue.main.async {
-                self?.loggerEntriesLabel.text = "\(count)"
+                self?.loggerEntriesLabel.text = "\(stressCount)|\(energyCount)"
             }
         }
     }
@@ -76,6 +80,7 @@ class SettingsViewController: UITableViewController {
         loggerLabel.text = ModelLogger.canLog ? "YES" : "NO"
         authenticatedLabel.text = isAuthenticatedWithEmpatica ? "YES" : "NO"
         updateLoggedEntries()
+        updateNickname()
     }
 
     func updateViews() {
@@ -111,6 +116,60 @@ class SettingsViewController: UITableViewController {
 
     func disconnectPressed(_ sender: Any) {
         DeviceManager.main.disconnect()
+    }
+
+    func updateNickname() {
+
+        ModelLogger.getNickname { [weak self] nickname in
+
+            DispatchQueue.main.async {
+                if nickname == nil {
+                    self?.loggerNicknameLabel.text = "Tap to add"
+                } else {
+                    self?.loggerNicknameLabel.text = nickname
+                }
+            }
+        }
+    }
+
+    func performNicknameChange(_ newNickname: String) {
+
+        let alert = UIAlertController(title: "Saving...", message: nil, preferredStyle: .alert)
+        present(alert, animated: true, completion: nil)
+
+        ModelLogger.modifyNickname(newNickname) { [weak self] result in
+            Thread.sleep(forTimeInterval: 1.0)
+            DispatchQueue.main.async {
+                alert.dismiss(animated: true, completion: nil)
+                self?.updateNickname()
+            }
+        }
+    }
+
+    @objc
+    func changeLoggerNickname() {
+
+        let alert = UIAlertController(
+            title: "Modify nickname:",
+            message: nil,
+            preferredStyle: .alert
+        )
+
+        alert.addTextField { (textField) in
+            textField.placeholder = "New nickname"
+        }
+
+        let confirmAction = UIAlertAction(title: "Change", style: .destructive) { [weak self] _ in
+            let textField = alert.textFields![0] as UITextField
+            if let newNickname = textField.text, !newNickname.isEmpty {
+                self?.performNicknameChange(newNickname)
+            }
+        }
+
+        alert.addAction(confirmAction)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+
+        present(alert, animated: true, completion: nil)
     }
 
     @IBAction func connectDisconnectPressed(_ sender: Any) {

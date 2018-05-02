@@ -77,15 +77,45 @@ class ModelLogger {
         }
     }
 
-    static func getCurrentLoggedEntries(_ completion: @escaping (Int) -> Void) {
+    static func getNickname(_ completion: @escaping (String?) -> Void) {
 
         guard let userID = userID else {
-            return completion(-1)
+            return completion(nil)
         }
 
-        let ref = Database.database().reference(withPath: "users/\(userID)/data")
+        let ref = Database.database().reference(withPath: "users/\(userID)/first_name")
         ref.observeSingleEvent(of: .value, with: { s in
-            completion(Int(s.childrenCount))
+            completion(s.value as? String)
+        })
+    }
+
+    static func modifyNickname(_ newNickname: String, completion: @escaping (Bool) -> Void) {
+
+        guard let userID = userID else {
+            return completion(false)
+        }
+
+        let userRef = Database.database().reference(withPath: "users/\(userID)")
+        userRef.updateChildValues(["first_name": newNickname]) { error, ref in
+            completion(error == nil)
+        }
+    }
+
+    static func getCurrentLoggedEntries(_ completion: @escaping (Int, Int) -> Void) {
+
+        guard let userID = userID else {
+            return completion(-1, -1)
+        }
+
+        let stressDataRef = Database.database().reference(withPath: "users/\(userID)/data")
+        let energyDataRef = Database.database().reference(withPath: "users/\(userID)/energy_data")
+
+        stressDataRef.observeSingleEvent(of: .value, with: { stressData in
+            energyDataRef.observeSingleEvent(of: .value, with: { energyData in
+                let stressDataCount = Int(stressData.childrenCount)
+                let energyDataCount = Int(energyData.childrenCount)
+                completion(stressDataCount, energyDataCount)
+            })
         })
     }
 
