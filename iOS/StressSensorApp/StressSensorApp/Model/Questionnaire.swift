@@ -9,8 +9,6 @@
 import Foundation
 import ResearchKit
 
-typealias QuestionnaireScore = Double
-
 struct Questionnaire: Codable {
 
     /// The name of the questionnaire.
@@ -65,6 +63,24 @@ struct Questionnaire: Codable {
         struct Option: Codable {
             let text: String?
             let value: Float
+        }
+    }
+
+    typealias Score = Double
+
+    struct Results: Codable {
+        let score: Score
+        let answers: [String: Float]
+        let appliedFactor: Double
+        let questionnaireName: String
+        let questionnaireVersion: String
+
+        enum CodingKeys: String, CodingKey {
+            case score
+            case answers
+            case appliedFactor = "applied_factor"
+            case questionnaireName = "questionnaire_name"
+            case questionnaireVersion = "questionnaire_version"
         }
     }
 
@@ -145,27 +161,48 @@ extension Questionnaire {
         return Questionnaire.fromFile(path)!
     }()
 
-    /// Evaluates the sum of the values of all choices picked by the candidate, applying the scoring factor.
-    private func evaluateSum(_ result: ORKResult) -> QuestionnaireScore {
+    /// Returns a dictionary of values of the candidate's choices keyed by question ID
+    private func extractAnswers(_ result: ORKResult) -> [String: Float] {
 
-        var total = 0.0
+        var res = [String: Float]()
+
         let stepResults = (result as! ORKTaskResult).results as! [ORKStepResult]
         for step in stepResults {
-            let questionResult = step.firstResult as? ORKChoiceQuestionResult
-            let ans = questionResult?.choiceAnswers?.first as? NSNumber
-            total += ans?.doubleValue ?? 0.0
+            if let questionResult = step.firstResult as? ORKChoiceQuestionResult {
+                let ans = questionResult.choiceAnswers?.first as? NSNumber
+                let id = step.identifier
+                if let value = ans?.floatValue {
+                    res[id] = value
+                }
+            }
         }
 
-        return total * (scoringFactor ?? 1.0)
+        return res
     }
 
     /// Evaluates the final score of the questionnaire from a given ORKResult object.
-    func evaluate(_ result: ORKResult) -> QuestionnaireScore {
+    func evaluate(_ result: ORKResult) -> Results {
 
-        switch scoring {
-        case .sum:
-            return evaluateSum(result)
-        }
+        let answers = extractAnswers(result)
+
+        let partialScore: Score = {
+            switch scoring {
+            case .sum:
+                // Sums the values of all answers
+                return Score(answers.values.reduce(0.0, +))
+            }
+        }()
+
+        let factor = scoringFactor ?? 1.0
+        let score = partialScore * factor
+
+        return Results(
+            score: score,
+            answers: answers,
+            appliedFactor: factor,
+            questionnaireName: self.name,
+            questionnaireVersion: self.version
+        )
     }
 
     /// Returns a dictionary of questions (keyed by ID) by sampling randomly the questionnaire.

@@ -38,8 +38,18 @@ class ModelLogger {
         let snapshot: SignalsSnapshot
         let sample: ModelSample
         let label: EnergyLevel
-        let user_id: String
+        let questionnaireResults: Questionnaire.Results
+        let userID: String
         let timestamp: TimeInterval
+
+        enum CodingKeys: String, CodingKey {
+            case snapshot
+            case sample
+            case label
+            case timestamp
+            case userID = "user_id"
+            case questionnaireResults = "questionnaire_results"
+        }
     }
 
     static func setup() {
@@ -123,18 +133,15 @@ class ModelLogger {
             timestamp: now
         )
 
-        guard let jsData = try? JSONEncoder().encode(entry) else { return }
-        let jsString = String(data: jsData, encoding: .utf8)!
-
         let dataSampleRef = userRef.child("data").childByAutoId()
 
         dataSampleRef.updateChildValues([
-            "js_data": jsString,
+            "js_data": entry.asJSON()!,
             "timestamp": now
         ])
     }
 
-    static func logEnergy(snapshot: SignalsSnapshot, sample: ModelSample, energyLevel: EnergyLevel) {
+    static func logEnergy(snapshot: SignalsSnapshot, sample: ModelSample, energyLevel: EnergyLevel, details: Questionnaire.Results) {
 
         guard canLog, let userID = userID else { return }
 
@@ -145,17 +152,15 @@ class ModelLogger {
             snapshot: snapshot,
             sample: sample,
             label: energyLevel,
-            user_id: userID,
+            questionnaireResults: details,
+            userID: userID,
             timestamp: now
         )
-
-        guard let jsData = try? JSONEncoder().encode(entry) else { return }
-        let jsString = String(data: jsData, encoding: .utf8)!
 
         let dataSampleRef = userRef.child("energy_data").childByAutoId()
 
         dataSampleRef.updateChildValues([
-            "js_data": jsString,
+            "js_data": entry.asJSON()!,
             "timestamp": now
         ])
     }

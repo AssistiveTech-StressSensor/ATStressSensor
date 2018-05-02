@@ -36,6 +36,13 @@ extension UIStoryboard {
     }
 }
 
+extension Encodable {
+    func asJSON() -> String? {
+        guard let jsonData = try? JSONEncoder().encode(self) else { return nil }
+        return String(data: jsonData, encoding: .utf8)
+    }
+}
+
 extension UIViewController {
 
     func presentGenericError(_ message: String) {

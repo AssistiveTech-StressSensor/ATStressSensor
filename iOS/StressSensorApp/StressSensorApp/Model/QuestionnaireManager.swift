@@ -13,13 +13,16 @@ class QuestionnaireManager: NSObject {
 
     fileprivate var task: ORKOrderedTask!
     fileprivate var snapshot: SignalsSnapshot!
+    fileprivate var questionnaire: Questionnaire!
     fileprivate var questionnaireCompletion: ((Bool) -> ())!
     fileprivate weak var parentController: UIViewController?
     fileprivate weak var taskController: ORKTaskViewController?
 
     func present(on parentVC: UIViewController, with snapshot: SignalsSnapshot, completion: @escaping ((Bool) -> ())) {
 
-        let task = Questionnaire.main.generateTask()
+        self.questionnaire = Questionnaire.main
+
+        let task = questionnaire.generateTask()
         let taskVC = ORKTaskViewController(task: task, taskRun: nil)
         taskVC.delegate = self
 
@@ -32,17 +35,18 @@ class QuestionnaireManager: NSObject {
         parentVC.present(taskVC, animated: true, completion: nil)
     }
 
-    private func finalize(with score: QuestionnaireScore?) {
+    private func finalize(with results: Questionnaire.Results?) {
 
-        if let score = score {
+        if let results = results {
 
-            let energyLevel = EnergyLevel(score)
+            let energyLevel = EnergyLevel(results.score)
             let sample = EnergyModel.main.addSample(snapshot: snapshot, for: energyLevel)
 
             ModelLogger.logEnergy(
                 snapshot: snapshot,
                 sample: sample,
-                energyLevel: energyLevel
+                energyLevel: energyLevel,
+                details: results
             )
 
             let alert = UIAlertController(
@@ -73,13 +77,13 @@ extension QuestionnaireManager: ORKTaskViewControllerDelegate {
 
     func taskViewController(_ taskViewController: ORKTaskViewController, didFinishWith reason: ORKTaskViewControllerFinishReason, error: Error?) {
 
-        var score: QuestionnaireScore?
+        var results: Questionnaire.Results?
 
         if reason == .completed {
-            let result = taskViewController.result
-            score = Questionnaire.main.evaluate(result)
+            let orkResult = taskViewController.result
+            results = questionnaire.evaluate(orkResult)
         }
 
-        finalize(with: score)
+        finalize(with: results)
     }
 }
