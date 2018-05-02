@@ -1,10 +1,10 @@
 {
     "name": "custom",
-    "version": "0.1",
+    "version": "0.2",
     "scoring": "sum",
-    "subset_size": 3,
+    "subset_size": 5,
     "different_categories": true,
-    "scoring_factor": 1.0,
+    "scoring_factor": 0.04,
 	"categories": [
 		{
 			"name": "CAPA (Control, Attitude, Performance, Achievement)",		
@@ -418,7 +418,7 @@
 					"text": "How quickly can you remember your last meal?",
 					"options": [
 						{
-							"text": "Less than 20 seconds",
+							"text": "Less than 5 seconds",
 							"value": 1.0
 						},
 						{
