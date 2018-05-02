@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>10</string>
+	<string>12</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -28,6 +28,14 @@
 	<string>This app uses Bluetooth to connect to the external sensor</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Required by Firebase SDK</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Required by ResearchKit</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Required by ResearchKit</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Required by ResearchKit</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Required by ResearchKit</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Required by Firebase SDK</string>
 	<key>UIBackgroundModes</key>
