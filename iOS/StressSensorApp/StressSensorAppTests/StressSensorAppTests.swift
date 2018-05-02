@@ -188,4 +188,23 @@ class StressSensorAppTests: XCTestCase {
         XCTAssert(circ[0] == circ.first)
         XCTAssert(circ[circ.count-1] == circ.last)
     }
+
+    func testQuestionnaire() {
+
+        continueAfterFailure = false
+
+        let path = Bundle.main.path(forResource: "custom_test", ofType: "json")
+        XCTAssertNotNil(path)
+
+        let questFromFile = Questionnaire.fromFile(path!)
+        XCTAssertNotNil(questFromFile)
+
+        let quest = Questionnaire.main
+        XCTAssertEqual(quest.allQuestions.keys, questFromFile!.allQuestions.keys)
+        XCTAssertEqual(quest.name, questFromFile!.name)
+        XCTAssertEqual(quest.version, questFromFile!.version)
+
+        XCTAssert(quest.categories.count > 0)
+        XCTAssert(quest.allQuestions.count > 0)
+    }
 }

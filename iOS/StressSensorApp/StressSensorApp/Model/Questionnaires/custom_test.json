@@ -1,5 +1,10 @@
 {
-	"test_type": "custom",
+    "name": "custom",
+    "version": "0.1",
+    "scoring": "sum",
+    "subset_size": 3,
+    "different_categories": true,
+    "scoring_factor": 1.0,
 	"categories": [
 		{
 			"name": "CAPA (Control, Attitude, Performance, Achievement)",		

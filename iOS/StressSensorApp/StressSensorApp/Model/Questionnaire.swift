@@ -13,11 +13,43 @@ typealias QuestionnaireScore = Double
 
 struct Questionnaire: Codable {
 
-    let test_type: TestType
+    /// The name of the questionnaire.
+    let name: String
+
+    /// A list of the categories of the questionnaire.
     let categories: [Category]
 
-    enum TestType: String, Codable {
-        case custom = "custom"
+    /// The type of function to be used for scoring.
+    /// Implemented options: ['sum'].
+    let scoring: Scoring
+
+    /// A string indicating the version of the questionnaire.
+    let version: String
+
+    /// The number of randomly sampled questions to be asked to the candidate.
+    /// Defaults to the number of categories.
+    let subsetSize: Int?
+
+    /// A boolean indicating if the randomly sampled questions should belong to exclusive categories.
+    /// Defaults to false.
+    let differentCategories: Bool?
+
+    /// A factor to be applied to the final score at the end of the evaluation.
+    /// Defaults to 1.0.
+    let scoringFactor: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case name
+        case categories
+        case scoring
+        case version
+        case subsetSize = "subset_size"
+        case differentCategories = "different_categories"
+        case scoringFactor = "scoring_factor"
+    }
+
+    enum Scoring: String, Codable {
+        case sum = "sum"
     }
 
     struct Category: Codable {
@@ -36,12 +68,14 @@ struct Questionnaire: Codable {
         }
     }
 
+    /// Dictionary of questions keyed with IDs based on the ordering of the questionnaire.
+    /// Ex. the 3rd question of the 5th category will have ID = '5.3'.
     var allQuestions: [String: Question] {
         var dict = [String: Question]()
         for i in 0..<categories.count {
             let questions = categories[i].questions
             for j in 0..<questions.count {
-                let id = "\(i).\(j)"
+                let id = "\(i+1).\(j+1)"
                 dict[id] = questions[j]
             }
         }
@@ -51,6 +85,7 @@ struct Questionnaire: Codable {
 
 extension Questionnaire.Question.Option {
 
+    /// Returns the option as a ORKTextChoice object.
     var asTextChoice: ORKTextChoice {
         return ORKTextChoice(
             text: "[\(Int(round(value)))]  \(text ?? "")",
@@ -63,6 +98,7 @@ extension Questionnaire.Question.Option {
 
 extension Questionnaire.Question {
 
+    /// Returns the question as a ORKFormStep with the given ID.
     func asFormStep(id: String) -> ORKFormStep {
         let step = ORKFormStep(identifier: id)
         step.isOptional = false
@@ -83,6 +119,7 @@ extension Questionnaire.Question {
 
 extension Questionnaire {
 
+    /// Returns a Questionnaire instance initialized with a given JSON file.
     static func fromFile(_ filepath: String) -> Questionnaire? {
 
         let url = URL(fileURLWithPath: filepath)
@@ -102,12 +139,14 @@ extension Questionnaire {
         return decoded
     }
 
+    /// Returns a Questionnaire instance initialized with the default JSON file.
     static let main: Questionnaire = {
         let path = Bundle.main.path(forResource: "custom_test", ofType: "json")!
         return Questionnaire.fromFile(path)!
     }()
 
-    func evaluateForCustomTest(_ result: ORKResult) -> QuestionnaireScore {
+    /// Evaluates the sum of the values of all choices picked by the candidate, applying the scoring factor.
+    private func evaluateSum(_ result: ORKResult) -> QuestionnaireScore {
 
         var total = 0.0
         let stepResults = (result as! ORKTaskResult).results as! [ORKStepResult]
@@ -116,18 +155,21 @@ extension Questionnaire {
             let ans = questionResult?.choiceAnswers?.first as? NSNumber
             total += ans?.doubleValue ?? 0.0
         }
-        // Should we multiply this value by a factor?
-        return total
+
+        return total * (scoringFactor ?? 1.0)
     }
 
+    /// Evaluates the final score of the questionnaire from a given ORKResult object.
     func evaluate(_ result: ORKResult) -> QuestionnaireScore {
 
-        switch test_type {
-        case .custom:
-            return evaluateForCustomTest(result)
+        switch scoring {
+        case .sum:
+            return evaluateSum(result)
         }
     }
 
+    /// Returns a dictionary of questions (keyed by ID) by sampling randomly the questionnaire.
+    /// If differentCategories is true, the questions are chosen from exclusive categories.
     func sampleQuestions(n: Int, differentCategories: Bool) -> [String: Question] {
 
         let shuffledKeys = Array(allQuestions.keys).shuffled
@@ -155,6 +197,7 @@ extension Questionnaire {
         }
     }
 
+    /// Returns an ORKOrderedTask object with the subset of questions to be presented to the candidate.
     func generateTask() -> ORKOrderedTask {
 
         var formSteps = [ORKStep]()
@@ -163,8 +206,10 @@ extension Questionnaire {
         intro.title = "Welcome"
         formSteps.append(intro)
 
-        let nQuestions = Constants.questionnaireLength
-        let selectedQuestions = sampleQuestions(n: nQuestions, differentCategories: true)
+        let selectedQuestions = sampleQuestions(
+            n: (subsetSize ?? categories.count),
+            differentCategories: (differentCategories ?? false)
+        )
 
         for (id, question) in selectedQuestions {
             formSteps.append(question.asFormStep(id: id))
