@@ -14,11 +14,11 @@ class QuestionnaireManager: NSObject {
     fileprivate var task: ORKOrderedTask!
     fileprivate var snapshot: SignalsSnapshot!
     fileprivate var questionnaire: Questionnaire!
-    fileprivate var questionnaireCompletion: ((Bool) -> ())!
+    fileprivate var questionnaireCompletion: ((Bool) -> ())?
     fileprivate weak var parentController: UIViewController?
     fileprivate weak var taskController: ORKTaskViewController?
 
-    func present(on parentVC: UIViewController, with snapshot: SignalsSnapshot, completion: @escaping ((Bool) -> ())) {
+    func present(on parentVC: UIViewController, with snapshot: SignalsSnapshot, completion: ((Bool) -> ())? = nil) {
 
         self.questionnaire = Questionnaire.main
 
@@ -61,13 +61,13 @@ class QuestionnaireManager: NSObject {
                 Thread.sleep(forTimeInterval: 1.0)
                 OperationQueue.main.addOperation {
                     alert.dismiss(animated: true, completion: nil)
-                    self.questionnaireCompletion(true)
+                    self.questionnaireCompletion?(true)
                     self.taskController?.dismiss(animated: true, completion: nil)
                 }
             }
 
         } else {
-            questionnaireCompletion(false)
+            questionnaireCompletion?(false)
             taskController?.dismiss(animated: true, completion: nil)
         }
     }

@@ -22,20 +22,20 @@ class AddSampleViewController: UITableViewController {
 
     private var stressLevel: StressLevel?
     private var snapshot: SignalsSnapshot!
-    private var addSampleCompletion: ((Bool) -> ())!
+    private var addSampleCompletion: ((Bool) -> ())?
 
     static func fromStoryboard() -> AddSampleViewController {
         let navID = UIStoryboard.main.instantiateViewController(withIdentifier: navIdentifier) as! UINavigationController
         return navID.topViewController as! AddSampleViewController
     }
 
-    static func present(on parentVC: UIViewController, with stressLevel: StressLevel?, and snapshot: SignalsSnapshot, completion: @escaping ((Bool) -> ())) {
+    static func present(on parentVC: UIViewController, stressLevel: StressLevel?, snapshot: SignalsSnapshot, completion: ((Bool) -> ())? = nil) {
         let vc = fromStoryboard()
-        vc.setup(with: stressLevel, and: snapshot, completion: completion)
+        vc.setup(stressLevel: stressLevel, snapshot: snapshot, completion: completion)
         parentVC.present(vc.navigationController!, animated: true, completion: nil)
     }
 
-    func setup(with stressLevel: StressLevel?, and snapshot: SignalsSnapshot, completion: @escaping ((Bool) -> ())) {
+    func setup(stressLevel: StressLevel?, snapshot: SignalsSnapshot, completion: ((Bool) -> ())? = nil) {
         self.stressLevel = stressLevel
         self.snapshot = snapshot
         self.addSampleCompletion = completion
@@ -111,7 +111,7 @@ class AddSampleViewController: UITableViewController {
             Thread.sleep(forTimeInterval: 1.0)
             OperationQueue.main.addOperation {
                 alert.dismiss(animated: true, completion: nil)
-                self.addSampleCompletion(true)
+                self.addSampleCompletion?(true)
                 self.dismiss(animated: true, completion: nil)
             }
         }
@@ -119,7 +119,7 @@ class AddSampleViewController: UITableViewController {
 
     @IBAction func cancelPressed() {
         tableView.endEditing(true)
-        addSampleCompletion(false)
+        addSampleCompletion?(false)
         dismiss(animated: true, completion: nil)
     }
 

@@ -11,26 +11,7 @@ import UIKit
 class TrainViewController: UIViewController {
 
     @IBOutlet weak var statusLabel: UILabel!
-
-    private let cooldownDateKey = "cooldown.date"
     private var questionnaireManager: QuestionnaireManager?
-
-    var cooldownDate: Date? {
-        didSet { updateStatusLabel() }
-    }
-
-    var cooldown: Bool {
-        if let cdd = cooldownDate {
-            return cdd > Date()
-        } else {
-            return false
-        }
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        readCooldownDate()
-    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -38,28 +19,17 @@ class TrainViewController: UIViewController {
     }
 
     func updateStatusLabel() {
-        if cooldown {
-            statusLabel.text = "You'll be able to a new sample later"
-        } else {
-            statusLabel.text = "Ready"
-        }
-    }
 
-    func readCooldownDate() {
-        if Constants.disableCooldown { return }
-        cooldownDate = UserDefaults().value(forKey: cooldownDateKey) as? Date
-    }
+        let aheadEnergy = EnergyModel.main.numberOfSamplesAhead
+        let aheadStress = StressModel.main.numberOfSamplesAhead
 
-    func clearCooldown() {
-        UserDefaults().set(nil, forKey: cooldownDateKey)
-        cooldownDate = nil
-    }
+        var text = "Energy Model: "
+        text += (aheadEnergy == 0 ? "up to date" : "\(aheadEnergy) sample\(aheadEnergy > 1 ? "s" : "") behind")
+        text += "\n"
+        text += "Stress Model: "
+        text += (aheadStress == 0 ? "up to date" : "\(aheadStress) sample\(aheadStress > 1 ? "s" : "") behind")
 
-    func triggerCooldown() {
-        if Constants.disableCooldown { return }
-        let cddate = Date().addingTimeInterval(Constants.cooldownLength)
-        UserDefaults().set(cddate, forKey: cooldownDateKey)
-        cooldownDate = cddate
+        statusLabel.text = text
     }
 
     func canTrainStressModel() -> Bool {
@@ -77,51 +47,43 @@ class TrainViewController: UIViewController {
     }
 
     func getSnapshotIfAllowed() -> SignalsSnapshot? {
-        if cooldown { return nil }
-
         let snapshot: SignalsSnapshot
-
         do {
             snapshot = try SignalAcquisition.generateSnapshot()
-
         } catch SignalAcquisitionError.snapshotGenerationFailed(let details) {
             presentGenericError("Latest data from sensor is corrupted or insufficient. Please try again later.\n\nDetails:\n\(details)")
             return nil
-
         } catch {
             presentGenericError(error.localizedDescription)
             return nil
         }
-
         return snapshot
     }
 
     @IBAction func teachEnergy() {
 
-        guard let snapshot = getSnapshotIfAllowed() else { return }
-
-        questionnaireManager = QuestionnaireManager()
-        questionnaireManager?.present(on: self, with: snapshot) {
-            [unowned self] completed in
-            if completed {
-                self.triggerCooldown()
-                self.updateStatusLabel()
+        if !Constants.disableCooldown && EnergyModel.main.cooldown {
+            presentGenericError("An energy sample was added recently. Please try again later.")
+        } else if let snapshot = getSnapshotIfAllowed() {
+            questionnaireManager = QuestionnaireManager()
+            questionnaireManager?.present(on: self, with: snapshot) {
+                [unowned self] completed in
+                if completed {
+                    self.updateStatusLabel()
+                }
             }
         }
     }
 
     @IBAction func teachStress() {
 
-        guard let snapshot = getSnapshotIfAllowed() else { return }
-
-        AddSampleViewController.present(
-            on: self,
-            with: nil,
-            and: snapshot
-        ) { [unowned self] completed in
-            if completed {
-                self.triggerCooldown()
-                self.updateStatusLabel()
+        if !Constants.disableCooldown && StressModel.main.cooldown {
+            presentGenericError("A stress sample was added recently. Please try again later.")
+        } else if let snapshot = getSnapshotIfAllowed() {
+            AddSampleViewController.present(on: self, stressLevel: nil, snapshot: snapshot) { [unowned self] completed in
+                if completed {
+                    self.updateStatusLabel()
+                }
             }
         }
     }
@@ -131,7 +93,6 @@ class TrainViewController: UIViewController {
         func confirm(_ action: UIAlertAction) {
             StressModel.main.clear()
             EnergyModel.main.clear()
-            clearCooldown()
             updateStatusLabel()
         }
 
@@ -169,7 +130,8 @@ class TrainViewController: UIViewController {
             NSLog("Actually training...")
             StressModel.main.train {
                 NSLog("Done training.")
-                OperationQueue.main.addOperation {
+                OperationQueue.main.addOperation { [weak self] in
+                    self?.updateStatusLabel()
                     alert.dismiss(animated: true, completion: nil)
                 }
             }
@@ -197,7 +159,8 @@ class TrainViewController: UIViewController {
             NSLog("Actually training...")
             EnergyModel.main.train {
                 NSLog("Done training.")
-                OperationQueue.main.addOperation {
+                OperationQueue.main.addOperation { [weak self] in
+                    self?.updateStatusLabel()
                     alert.dismiss(animated: true, completion: nil)
                 }
             }
@@ -213,15 +176,15 @@ class TrainViewController: UIViewController {
         )
 
         alert.addAction(UIAlertAction(
-            title: "Stress model (SVM)",
-            style: .default,
-            handler: trainStressModel
-        ))
-
-        alert.addAction(UIAlertAction(
             title: "Energy model (SVR)",
             style: .default,
             handler: trainEnergyModel
+        ))
+
+        alert.addAction(UIAlertAction(
+            title: "Stress model (SVM)",
+            style: .default,
+            handler: trainStressModel
         ))
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
