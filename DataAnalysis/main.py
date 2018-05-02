@@ -8,6 +8,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, f1_score
 import data_download as dd
 
 DB_FILEPATH = '../../Data/db.pkl'
@@ -134,11 +135,18 @@ def main():
     p_train = svm.predict(X_train)
     c_train = np.sum([p_train == y_train])
     acc_train = 100.0 * c_train / X_train.shape[0]
-    print('Accuracy (train): {}%'.format(round(acc_train, 2)))
+    conf_train = confusion_matrix(y_train, p_train)
+    f1_train = f1_score(y_train, p_train)
+    print('Accuracy (train): {}%, F1: {}'.format(round(acc_train, 2), round(f1_train, 4)))
+    print('Confusion matrix (train): \n', conf_train)
 
     p_test = svm.predict(X_test)
     c_test = np.sum([p_test == y_test])
     acc_test = 100.0 * c_test / X_test.shape[0]
-    print('Accuracy (test): {}%'.format(round(acc_test, 2)))
+    conf_test = confusion_matrix(y_test, p_test)
+    f1_test = f1_score(y_test, p_test)
+    print('Accuracy (test): {}%, F1: {}'.format(round(acc_test, 2), round(f1_test, 4)))
+    print('Confusion matrix (test): \n', conf_test)
+
 
 main()
