@@ -30,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         DeviceManager.main.setup()
         StressModel.main.setup()
+        EnergyModel.main.setup()
         SignalAcquisition.setup()
         ModelLogger.setup()
 
