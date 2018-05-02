@@ -16,9 +16,6 @@ struct Constants {
     /// Minimum number of samples per class required to train the stress model
     static let minSamplesPerClass = 5
 
-    /// Number of random questions to be asked to train the energy model
-    static let questionnaireLength = 2
-
     static let modelWindowLength: TimeInterval = 2*60.0 // 2 minutes
 
     static let cooldownLength: TimeInterval = 2*60.0 // 2 minutes
