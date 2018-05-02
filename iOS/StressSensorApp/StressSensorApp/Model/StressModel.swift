@@ -41,6 +41,11 @@ class StressModelData: Codable {
         didSet { invalidateCounters() }
     }
 
+    /// All model entries coupled as (sample, label), sorted by recording time (oldest first)
+    var sortedCouples: [Couple] {
+        return couples.sorted { $0.sample.timestampEnd < $1.sample.timestampEnd }
+    }
+
     private var _stressedCount: Int?
     private var _notStressedCount: Int?
 
@@ -63,6 +68,11 @@ class StressModelData: Codable {
     /// Total number of entries
     var count: Int {
         return couples.count
+    }
+
+    /// The entry that was recorded last
+    var latestCouple: Couple? {
+        return sortedCouples.last
     }
 
     /// Returns an SVM-friendly object to be used for training
@@ -179,6 +189,9 @@ class StressModel {
     /// SVM wrapper object
     private var svm = SVM()
 
+    /// UserDefaults key for the date of latest training
+    private let latestTrainingDateKey = "stressModel.latestTraining"
+
     /// Full path to the JSON file of the dataset
     private let dataPath: String = {
         return "\(Constants.documentsPath)/dataset.json"
@@ -197,6 +210,46 @@ class StressModel {
     /// Full path to the YAML file of the SVM model, if present on disk
     func svmPathIfAvailable() -> String? {
         return FileManager().fileExists(atPath: svmPath) ? svmPath : nil
+    }
+
+    /// Date of the sample added last, nil if there are no samples
+    var dateOfLatestSample: Date? {
+        if let timestamp = data.latestCouple?.sample.timestampEnd {
+            return Date(timeIntervalSince1970: timestamp)
+        } else {
+            return nil
+        }
+    }
+
+    /// The date of latest training
+    var dateOfLatestTraining: Date? {
+        return UserDefaults().value(forKey: latestTrainingDateKey) as? Date
+    }
+
+    /// Number of samples that have been added since the last time the model was trained
+    var numberOfSamplesAhead: Int {
+        if let cached = _numberOfSamplesAhead {
+            return cached
+        } else if let trainingTS = dateOfLatestTraining?.timeIntervalSince1970 {
+            let ahead = data.sortedCouples.filter { $0.sample.timestampEnd > trainingTS }
+            _numberOfSamplesAhead = ahead.count
+        } else {
+            _numberOfSamplesAhead = data.count
+        }
+        return _numberOfSamplesAhead!
+    }
+
+    /// Cached value of numberOfSamplesAhead
+    private var _numberOfSamplesAhead: Int?
+
+    /// Whether or not the candidate should wait to add a new sample
+    var cooldown: Bool {
+        let length = Constants.cooldownLength
+        if let cooldownDate = dateOfLatestSample?.addingTimeInterval(length) {
+            return cooldownDate > Date()
+        } else {
+            return false
+        }
     }
 
     /// Whether or not the model has been trained so far
@@ -254,6 +307,7 @@ class StressModel {
         let sample = ModelSample(snapshot: snapshot)
         data.append(sample, stressLevel)
         data.write(to: dataPath)
+        _numberOfSamplesAhead = (_numberOfSamplesAhead ?? 0) + 1
         return sample
     }
 
@@ -264,12 +318,17 @@ class StressModel {
         try? fm.removeItem(atPath: dataPath)
         data = StressModelData()
         svm = SVM()
+        UserDefaults().setValue(nil, forKey: latestTrainingDateKey)
     }
 
     /// Trains async. the model with the provided dataset
     func train(completion: @escaping () -> ()) {
         let trainingData = data.balanced().svmTrainingData
         svm.autoTrain(with: trainingData) { [unowned self] in
+            DispatchQueue.main.async {
+                UserDefaults().setValue(Date(), forKey: self.latestTrainingDateKey)
+            }
+            self._numberOfSamplesAhead = 0
             self.exportSVM()
             completion()
         }
