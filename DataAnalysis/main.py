@@ -5,13 +5,15 @@
 import json
 import numpy as np
 from pathlib import Path
+from os import remove
 import matplotlib.pyplot as plt
-from sklearn.svm import SVC
+from sklearn.svm import SVC, SVR
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, f1_score
 import data_download as dd
 
-DB_FILEPATH = '../../Data/db.pkl'
+DATA_FOLDER = '../../Data/'
+DB_FILEPATH = DATA_FOLDER + 'db.pkl'
 STRESSED = 1.0
 NOT_STRESSED = 0.0
 
@@ -26,8 +28,9 @@ def unpickle(filepath):
         res = pickle.load(fo, encoding='bytes')
     return res
 
-def extract_windows(user_content):
-    data = user_content['data']
+def extract_windows(user_content, data_type):
+    data = user_content.get(data_type, None)
+    assert data is not None, 'No data of such type for this user'
     items = list(data.values())
     windows = [json.loads(item['js_data']) for item in items]
     return windows
@@ -52,10 +55,10 @@ def dataset_from_file(filepath):
         windows = res['couples']
         return get_dataset(windows)
 
-def dataset_from_db_user_content(user_content):
-    return get_dataset(extract_windows(user_content))
+def dataset_from_db_user_content(user_content, data_type):
+    return get_dataset(extract_windows(user_content, data_type))
 
-def dataset_from_db(user_index):
+def dataset_from_db(user_index, data_type):
 
     if not Path(DB_FILEPATH).is_file():
         print('Local copy of DB not found, downloading...')
@@ -69,7 +72,7 @@ def dataset_from_db(user_index):
     subject_name = selected_user.get('first_name', '?')
     print("Subject name: ", subject_name)
 
-    return dataset_from_db_user_content(selected_user)
+    return dataset_from_db_user_content(selected_user, data_type)
 
 def balance_dataset(X, y):
     X_0, X_1 = X[y == NOT_STRESSED],  X[y == STRESSED]
@@ -96,16 +99,39 @@ def balance_dataset(X, y):
 
     return X_new, y_new
 
+def energy_from_test_result(test_result):
+    return 1.0 - ((test_result - 0.2) / 0.8)
+
+def relative_err(a,b,eps=1e-12):
+    assert a.shape == b.shape
+    return np.abs(a-b) / np.maximum(eps, np.abs(a)+np.abs(b))
+
+def clear_cached_db():
+    if Path(DB_FILEPATH).is_file():
+        remove(DB_FILEPATH)
+
 
 ###########################
 # Experiments
 ###########################
 
-def get_alexa():
-    return dataset_from_db(user_index=1)
+def get_alexa_remote_stress():
+    return dataset_from_db(user_index=1, data_type='data')
 
-def get_javi():
-    return dataset_from_file('/Users/Carlo/Desktop/dataset.json')
+def get_javi_remote_stress():
+    return dataset_from_db(user_index=0, data_type='data')
+
+def get_alexa_remote_energy():
+    return dataset_from_db(user_index=1, data_type='energy_data')
+
+def get_javi_remote_energy():
+    return dataset_from_db(user_index=0, data_type='energy_data')
+
+def get_alexa_local_stress():
+    return dataset_from_file(DATA_FOLDER+'alexa-20180507/dataset.json')
+
+def get_javi_local_stress():
+    return dataset_from_file(DATA_FOLDER+'javi-20180427/dataset.json')
 
 def test_signals(db_content):
 
@@ -193,10 +219,10 @@ def test_dataset_avg(X, y, trials=1000):
 def test_model_generalization():
 
     # Alexa:
-    X_alexa, y_alexa = get_alexa()
+    X_alexa, y_alexa = get_alexa_remote_stress()
 
     # Javi:
-    X_javi, y_javi = get_javi()
+    X_javi, y_javi = get_javi_local_stress()
 
     for i in range(2):
 
@@ -232,14 +258,68 @@ def test_model_generalization():
 def test_composite_model():
 
     # Alexa:
-    X_alexa, y_alexa = get_alexa()
+    X_alexa, y_alexa = get_alexa_remote_stress()
 
     # Javi:
-    X_javi, y_javi = get_javi()
+    X_javi, y_javi = get_javi_local_stress()
 
     X = np.concatenate([X_alexa, X_javi])
     y = np.concatenate([y_alexa, y_javi])
     test_dataset_avg(X, y, trials=1000)
 
+
+def test_energy_model(X, y, silent=False):
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
+
+    svr = SVR()
+    svr.epsilon = 1.0# / 30.0
+    svr.C = 2.0# / 30.0
+
+    svr.fit(X_train, y_train)
+
+    p_train = svr.predict(X_train)
+    p_test = svr.predict(X_test)
+
+    mse_train = np.mean((p_train - y_train) ** 2)
+    mse_test = np.mean((p_test - y_test) ** 2)
+
+    mean_abs_err_train = np.mean(np.abs(p_train - y_train))
+    mean_abs_err_test = np.mean(np.abs(p_test - y_test))
+
+    err_rel_train = np.mean(relative_err(p_train, y_train))
+    err_rel_test = np.mean(relative_err(p_test, y_test))
+
+    if not silent:
+        print('mse_train', mse_train)
+        print('mse_test', mse_test)
+        print('err_rel_train', err_rel_train)
+        print('err_rel_test', err_rel_test)
+        print('mean_abs_err_train', mean_abs_err_train)
+        print('mean_abs_err_test', mean_abs_err_test)
+
+    return [mse_test, err_rel_test, mean_abs_err_test]
+
+def test_energy_model_avg(X, y, trials=1000):
+
+    print('First result:')
+    test_energy_model(X, y, silent=False)
+
+    results = np.array([test_energy_model(X, y, silent=True) for _ in range(trials)])
+    mean_results = np.mean(results, axis=0)
+
+    avg_mse_test = mean_results[0]
+    avg_rel_err_test = mean_results[1]
+    avg_mean_abs_err_test = mean_results[2]
+    print('\nFinal results:')
+    print('avg_mse_test', avg_mse_test)
+    print('avg_rel_err_test', avg_rel_err_test)
+    print('avg_mean_abs_err_test', avg_mean_abs_err_test)
+
+
 if __name__ == '__main__':
-    test_composite_model()
+
+    X_javi, y_javi = get_javi_remote_energy()
+    y_javi = energy_from_test_result(y_javi)*30.0
+
+    test_energy_model_avg(X_javi, y_javi)
