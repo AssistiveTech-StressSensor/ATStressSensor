@@ -29,7 +29,7 @@
 							"value": 4.0
 						},
 						{
-							"text": "No, I am not able to solve any important thing",
+							"text": "No, I am not able to solve any important things",
 							"value": 5.0
 						},
 					],
@@ -54,7 +54,7 @@
 							"value": 4.0
 						},
 						{
-							"text": "No, I cannot handle any important change",
+							"text": "No, I cannot handle any important changes",
 							"value": 5.0
 						},
 					],
@@ -88,7 +88,7 @@
 					"text": "Do things go as you expect?",
 					"options": [
 						{
-							"text": "Yes, everything is going as I spected",
+							"text": "Yes, everything is going as I expected",
 							"value": 1.0
 						},
 						{
@@ -146,7 +146,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "I have control over some things, I do not over others",
+							"text": "I have control over some things, but not everything",
 							"value": 3.0
 						},
 						{
@@ -196,7 +196,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "Maybe, I am not sure if I can acomplish everything",
+							"text": "Maybe, I am not sure if I can accomplish everything",
 							"value": 3.0
 						},
 						{
@@ -268,7 +268,7 @@
 					"text": "Are you able to keep your thoughts together and concentrate?",
 					"options": [
 						{
-							"text": "Yes, I can concentrate completelly",
+							"text": "Yes, I can concentrate completely",
 							"value": 1.0
 						},
 						{
@@ -276,7 +276,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "I can concentrate but I might lost the attention time to time",
+							"text": "I can concentrate but I might lose the attention from time to time",
 							"value": 3.0
 						},
 						{
@@ -301,7 +301,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "I can focus but it is a bit difuse",
+							"text": "I can focus but it is a bit difficult",
 							"value": 3.0
 						},
 						{
@@ -351,7 +351,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "Partially, I can read complex texts with some difficulty",
+							"text": "Partially, I can read complex texts with some difficulties",
 							"value": 3.0
 						},
 						{
@@ -384,7 +384,7 @@
 							"value": 4.0
 						},
 						{
-							"text": "No, I cannot remember anything",
+							"text": "I cannot remember anything",
 							"value": 5.0
 						},
 					],
@@ -484,13 +484,13 @@
 							"value": 4.0
 						},
 						{
-							"text": "Yes, I am completelly tired",
+							"text": "Yes, I am completely tired",
 							"value": 5.0
 						},
 					],
 				},
 				{
-					"text": "Do you feel like you are capable to solve your tasks?",
+					"text": "Do you feel like you are able to solve your tasks?",
 					"options": [
 						{
 							"text": "Yes, I can solve all my tasks",
