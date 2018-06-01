@@ -748,7 +748,7 @@
 					"text": "Are sensible to sounds?",
 					"options": [
 						{
-							"text": "No, sounds do not mean somethign special",
+							"text": "No, sounds do not disturb me",
 							"value": 1.0
 						},
 						{
@@ -806,7 +806,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "The level of noise is increasing a starts to bother me",
+							"text": "The level of noise starts to bother me",
 							"value": 3.0
 						},
 						{
@@ -820,7 +820,7 @@
 					],
 				},
 				{
-					"text": "How sensitive to external perceptions do you feel?",
+					"text": "How sensitive to external stimuli do you feel?",
 					"options": [
 						{
 							"text": "Nothing at all",
@@ -831,7 +831,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "Some external perceptions affect me",
+							"text": "Some external stimuli affect me",
 							"value": 3.0
 						},
 						{
@@ -839,7 +839,7 @@
 							"value": 4.0
 						},
 						{
-							"text": "Every perception saturates me right now",
+							"text": "Every stimulus saturates me right now",
 							"value": 5.0
 						},
 					],
@@ -936,7 +936,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "Maybe, I could sleep more, but I do not feel tired",
+							"text": "Maybe, I could have slept more, but I do not feel tired",
 							"value": 3.0
 						},
 						{
@@ -1033,7 +1033,7 @@
 					"text": "Do you feel comfortable doing many things at the same time?",
 					"options": [
 						{
-							"text": "Yes, I am multitask",
+							"text": "Yes, I am multitasker",
 							"value": 1.0
 						},
 						{
@@ -1130,7 +1130,7 @@
 					],
 				},
 				{
-					"text": "How easily angry do you feel?",
+					"text": "How easily do you feel angry?",
 					"options": [
 						{
 							"text": "Nothing, I cannot get agry right now",
@@ -1191,7 +1191,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "Maybe, some things might affect me emotionally more than often",
+							"text": "Maybe, some things might affect me emotionally more than usual",
 							"value": 3.0
 						},
 						{
