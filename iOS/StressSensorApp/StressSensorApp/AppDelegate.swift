@@ -44,6 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         DeviceManager.main.prepareForBackground()
         toggleAppSwitcherOverlay(show: true, animated: false)
+        Coach.activate()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -52,6 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         DeviceManager.main.prepareForResume()
+        Coach.deactivate()
     }
 }
 

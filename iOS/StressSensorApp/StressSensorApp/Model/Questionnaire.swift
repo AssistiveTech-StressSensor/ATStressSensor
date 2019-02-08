@@ -129,6 +129,7 @@ extension Questionnaire.Question {
                 optional: false
             )
         ]
+        step.footnote = "Question ID: \(id)"
         return step
     }
 }

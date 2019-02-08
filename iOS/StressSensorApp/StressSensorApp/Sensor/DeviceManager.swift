@@ -63,21 +63,6 @@ class DeviceManager: NSObject {
 
 extension DeviceManager {
 
-    private func notifyForTag() {
-
-        let content = UNMutableNotificationContent()
-        content.body = "Open the app to tag an event"
-        content.threadIdentifier = "device.tag.received"
-
-        let req = UNNotificationRequest(
-            identifier: "device.tag.received",
-            content: content,
-            trigger: nil
-        )
-
-        UNUserNotificationCenter.current().add(req, withCompletionHandler: nil)
-    }
-
     private func notifyForDisconnection() {
 
         let content = UNMutableNotificationContent()
@@ -149,8 +134,8 @@ extension DeviceManager: EmpaticaDeviceDelegate {
     }
 
     func didReceiveTag(atTimestamp timestamp: Double, fromDevice device: EmpaticaDeviceManager!) {
-        DispatchQueue.main.async { [weak self] in
-            self?.notifyForTag()
+        DispatchQueue.main.async {
+            Coach.tagPressed()
         }
     }
 
@@ -177,6 +162,7 @@ extension DeviceManager: EmpaticaDeviceDelegate {
         DispatchQueue.main.async {
             SignalAcquisition.addSample(value: Double(ibi), timestamp: timestamp, signal: .ibi)
             SignalAcquisition.addSample(value: 60.0/Double(ibi), timestamp: timestamp, signal: .heartRate)
+            Coach.fireIfNeeded()
         }
     }
 

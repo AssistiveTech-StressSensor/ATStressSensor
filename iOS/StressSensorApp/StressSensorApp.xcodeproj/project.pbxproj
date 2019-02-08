@@ -29,6 +29,7 @@
 		2385161A2063BC4800E78029 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238516192063BC4800E78029 /* AVFoundation.framework */; };
 		2385161C2063BC6000E78029 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2385161B2063BC6000E78029 /* CoreMedia.framework */; };
 		23A18BD92032EBF8002D514A /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23A18BD82032EBF8002D514A /* opencv2.framework */; };
+		23A96D7120C6994100D32A02 /* Coach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A96D7020C6994100D32A02 /* Coach.swift */; };
 		23ADED482033BDD600E2A7F3 /* RevEmpaLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */; };
 		23ADED4A2035DCDA00E2A7F3 /* StressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED492035DCDA00E2A7F3 /* StressModel.swift */; };
 		23ADED4C20360FE600E2A7F3 /* TrainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED4B20360FE600E2A7F3 /* TrainViewController.swift */; };
@@ -100,6 +101,7 @@
 		23A18BD32032E756002D514A /* SwiftyOpenCV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftyOpenCV.h; sourceTree = "<group>"; };
 		23A18BD62032EBF1002D514A /* EmpaLink-ios-0.7-full.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "EmpaLink-ios-0.7-full.framework"; path = "ThirdPartyLibraries/EmpaLink-ios-0.7-full.framework"; sourceTree = "<group>"; };
 		23A18BD82032EBF8002D514A /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ThirdPartyLibraries/opencv2.framework; sourceTree = "<group>"; };
+		23A96D7020C6994100D32A02 /* Coach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coach.swift; sourceTree = "<group>"; };
 		23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevEmpaLink.swift; sourceTree = "<group>"; };
 		23ADED492035DCDA00E2A7F3 /* StressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressModel.swift; sourceTree = "<group>"; };
 		23ADED4B20360FE600E2A7F3 /* TrainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainViewController.swift; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 				2314D03A20921C7600A35C10 /* Questionnaires */,
 				23ADED492035DCDA00E2A7F3 /* StressModel.swift */,
 				23CFB2B7208DEB86000B93F2 /* EnergyModel.swift */,
+				23A96D7020C6994100D32A02 /* Coach.swift */,
 				23681E242039FBF400F39507 /* ModelLogger.swift */,
 				23F3BC2F20864EBF004B4EC4 /* Questionnaire.swift */,
 				23CFB2B5208DD948000B93F2 /* QuestionnaireManager.swift */,
@@ -662,6 +665,7 @@
 				23CFB2BC208DF410000B93F2 /* EnergyModel.swift in Sources */,
 				23CFB2BA208DEBBF000B93F2 /* ModelSample.swift in Sources */,
 				23ADED482033BDD600E2A7F3 /* RevEmpaLink.swift in Sources */,
+				23A96D7120C6994100D32A02 /* Coach.swift in Sources */,
 				23B5DA9E202CC92100D22352 /* LiveChart.swift in Sources */,
 				23681E22203787BD00F39507 /* Utilities.swift in Sources */,
 				23B5DAA4202CFFA000D22352 /* DeviceManager.swift in Sources */,
