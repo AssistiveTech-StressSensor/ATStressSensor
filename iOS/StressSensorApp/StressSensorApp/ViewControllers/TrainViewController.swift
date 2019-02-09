@@ -22,12 +22,16 @@ class TrainViewController: UIViewController {
 
         let aheadEnergy = EnergyModel.main.numberOfSamplesAhead
         let aheadStress = StressModel.main.numberOfSamplesAhead
+        let aheadQuadrant = QuadrantModel.main.numberOfSamplesAhead
 
         var text = "Energy Model: "
         text += (aheadEnergy == 0 ? "up to date" : "\(aheadEnergy) sample\(aheadEnergy > 1 ? "s" : "") behind")
         text += "\n"
         text += "Stress Model: "
         text += (aheadStress == 0 ? "up to date" : "\(aheadStress) sample\(aheadStress > 1 ? "s" : "") behind")
+        text += "\n"
+        text += "Quadrant Model: "
+        text += (aheadQuadrant == 0 ? "up to date" : "\(aheadQuadrant) sample\(aheadQuadrant > 1 ? "s" : "") behind")
 
         statusLabel.text = text
     }
@@ -88,11 +92,25 @@ class TrainViewController: UIViewController {
         }
     }
 
+    @IBAction func teachQuadrant() {
+
+        if !Constants.disableCooldown && QuadrantModel.main.cooldown {
+            presentGenericError("A quadrant sample was added recently. Please try again later.")
+        } else if let snapshot = getSnapshotIfAllowed() {
+            QuadrantViewController.present(on: self, snapshot: snapshot) { [unowned self] completed in
+                if completed {
+                    self.updateStatusLabel()
+                }
+            }
+        }
+    }
+
     @IBAction func clearPressed() {
 
         func confirm(_ action: UIAlertAction) {
             StressModel.main.clear()
             EnergyModel.main.clear()
+            QuadrantModel.main.clear()
             updateStatusLabel()
         }
 
@@ -187,6 +205,14 @@ class TrainViewController: UIViewController {
             handler: trainStressModel
         ))
 
+        let qModelButton = UIAlertAction(
+            title: "Quadrant model",
+            style: .default,
+            handler: nil
+        )
+        qModelButton.isEnabled = false
+        alert.addAction(qModelButton)
+
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
         present(alert, animated: true, completion: nil)
@@ -196,11 +222,12 @@ class TrainViewController: UIViewController {
 
         let energyModelPath = EnergyModel.main.svrPathIfAvailable()
         let energyDatasetPath = EnergyModel.main.dataPathIfAvailable()
+        let quadrantDatasetPath = QuadrantModel.main.dataPathIfAvailable()
 
         let stressModelPath = StressModel.main.svmPathIfAvailable()
         let stressDatasetPath = StressModel.main.dataPathIfAvailable()
 
-        let allPaths = [energyModelPath, energyDatasetPath, stressModelPath, stressDatasetPath]
+        let allPaths = [energyModelPath, energyDatasetPath, stressModelPath, stressDatasetPath, quadrantDatasetPath]
         let availablePaths = allPaths.compactMap { $0 }
 
         if availablePaths.isEmpty {
@@ -249,6 +276,14 @@ class TrainViewController: UIViewController {
                 title: "Raw stress dataset (.json)",
                 style: .default,
                 handler: {_ in share([stressDatasetPath!])}
+            ))
+        }
+
+        if quadrantDatasetPath != nil {
+            alert.addAction(UIAlertAction(
+                title: "Raw quadrant dataset (.json)",
+                style: .default,
+                handler: {_ in share([quadrantDatasetPath!])}
             ))
         }
 

@@ -28,6 +28,9 @@
 		238516182063BC0100E78029 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238516172063BC0100E78029 /* Accelerate.framework */; };
 		2385161A2063BC4800E78029 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 238516192063BC4800E78029 /* AVFoundation.framework */; };
 		2385161C2063BC6000E78029 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2385161B2063BC6000E78029 /* CoreMedia.framework */; };
+		2398C36D220D8BA70000800D /* QuadrantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2398C36C220D8BA70000800D /* QuadrantView.swift */; };
+		2398C36F220DEE5B0000800D /* QuadrantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2398C36E220DEE5B0000800D /* QuadrantViewController.swift */; };
+		2398C371220DF2350000800D /* QuadrantModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2398C370220DF2350000800D /* QuadrantModel.swift */; };
 		23A18BD92032EBF8002D514A /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23A18BD82032EBF8002D514A /* opencv2.framework */; };
 		23A96D7120C6994100D32A02 /* Coach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A96D7020C6994100D32A02 /* Coach.swift */; };
 		23ADED482033BDD600E2A7F3 /* RevEmpaLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */; };
@@ -96,6 +99,9 @@
 		238516192063BC4800E78029 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		2385161B2063BC6000E78029 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		2385161D2063EBEF00E78029 /* StressSensorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StressSensorApp.entitlements; sourceTree = "<group>"; };
+		2398C36C220D8BA70000800D /* QuadrantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadrantView.swift; sourceTree = "<group>"; };
+		2398C36E220DEE5B0000800D /* QuadrantViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadrantViewController.swift; sourceTree = "<group>"; };
+		2398C370220DF2350000800D /* QuadrantModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadrantModel.swift; sourceTree = "<group>"; };
 		23A18BD02032E716002D514A /* SVM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVM.h; sourceTree = "<group>"; };
 		23A18BD12032E717002D514A /* SVM.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SVM.mm; sourceTree = "<group>"; };
 		23A18BD32032E756002D514A /* SwiftyOpenCV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftyOpenCV.h; sourceTree = "<group>"; };
@@ -255,6 +261,7 @@
 				2314D03A20921C7600A35C10 /* Questionnaires */,
 				23ADED492035DCDA00E2A7F3 /* StressModel.swift */,
 				23CFB2B7208DEB86000B93F2 /* EnergyModel.swift */,
+				2398C370220DF2350000800D /* QuadrantModel.swift */,
 				23A96D7020C6994100D32A02 /* Coach.swift */,
 				23681E242039FBF400F39507 /* ModelLogger.swift */,
 				23F3BC2F20864EBF004B4EC4 /* Questionnaire.swift */,
@@ -290,6 +297,7 @@
 			children = (
 				23B5DA9D202CC92100D22352 /* LiveChart.swift */,
 				2309F0B620501CDD00EE651B /* StressChart.swift */,
+				2398C36C220D8BA70000800D /* QuadrantView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -311,6 +319,7 @@
 				23ADED4B20360FE600E2A7F3 /* TrainViewController.swift */,
 				23681E1F2037306900F39507 /* StressViewController.swift */,
 				2309F0B3204D6FF000EE651B /* AddSampleViewController.swift */,
+				2398C36E220DEE5B0000800D /* QuadrantViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -664,6 +673,7 @@
 				23F3BC3020864EBF004B4EC4 /* Questionnaire.swift in Sources */,
 				23CFB2BC208DF410000B93F2 /* EnergyModel.swift in Sources */,
 				23CFB2BA208DEBBF000B93F2 /* ModelSample.swift in Sources */,
+				2398C36F220DEE5B0000800D /* QuadrantViewController.swift in Sources */,
 				23ADED482033BDD600E2A7F3 /* RevEmpaLink.swift in Sources */,
 				23A96D7120C6994100D32A02 /* Coach.swift in Sources */,
 				23B5DA9E202CC92100D22352 /* LiveChart.swift in Sources */,
@@ -671,11 +681,13 @@
 				23B5DAA4202CFFA000D22352 /* DeviceManager.swift in Sources */,
 				23B5DAA2202CFDBB00D22352 /* Signal.swift in Sources */,
 				2309F0B4204D6FF000EE651B /* AddSampleViewController.swift in Sources */,
+				2398C36D220D8BA70000800D /* QuadrantView.swift in Sources */,
 				23B5DAA0202CFD9200D22352 /* SignalAcquisition.swift in Sources */,
 				231F4CAE1FCF5F5000AE6881 /* DayViewController.swift in Sources */,
 				231F4CAC1FCF5F5000AE6881 /* AppDelegate.swift in Sources */,
 				231F4CE01FCF6AB700AE6881 /* Constants.swift in Sources */,
 				2314D0382091F2A100A35C10 /* Secret.swift in Sources */,
+				2398C371220DF2350000800D /* QuadrantModel.swift in Sources */,
 				23681E202037306900F39507 /* StressViewController.swift in Sources */,
 				23681E27203B935D00F39507 /* Circular.swift in Sources */,
 				23E18B05202DE2EF0034134E /* SettingsViewController.swift in Sources */,

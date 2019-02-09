@@ -52,6 +52,22 @@ class ModelLogger {
         }
     }
 
+    private struct QuadrantEntry: Codable {
+        let snapshot: SignalsSnapshot
+        let sample: ModelSample
+        let label: QuadrantValue
+        let userID: String
+        let timestamp: TimeInterval
+
+        enum CodingKeys: String, CodingKey {
+            case snapshot
+            case sample
+            case label
+            case timestamp
+            case userID = "user_id"
+        }
+    }
+
     static func setup() {
 
         if Secret.isValid {
@@ -188,6 +204,29 @@ class ModelLogger {
         )
 
         let dataSampleRef = userRef.child("energy_data").childByAutoId()
+
+        dataSampleRef.updateChildValues([
+            "js_data": entry.asJSON()!,
+            "timestamp": now
+        ])
+    }
+
+    static func logQuadrant(snapshot: SignalsSnapshot, sample: ModelSample, value: QuadrantValue) {
+
+        guard canLog, let userID = userID else { return }
+
+        let userRef = Database.database().reference(withPath: "users/\(userID)")
+        let now = Date().timeIntervalSince1970
+
+        let entry = QuadrantEntry(
+            snapshot: snapshot,
+            sample: sample,
+            label: value,
+            userID: userID,
+            timestamp: now
+        )
+
+        let dataSampleRef = userRef.child("quadrant_data").childByAutoId()
 
         dataSampleRef.updateChildValues([
             "js_data": entry.asJSON()!,
