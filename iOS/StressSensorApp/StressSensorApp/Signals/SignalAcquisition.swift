@@ -39,35 +39,19 @@ struct SignalSample {
 
 class SignalAcquisition {
 
-    private static var lastSamples: [Signal: SignalSample] = [:]
-
-    private static var debugNoiseTimer: DispatchSourceTimer?
-    private static let debugNoiseHz: Double = 4.0
-
-    private static let gsrExpectedHz: Double = 4.0
-    private static let gsrMinHz: Double = 3.8
-    private static let gsrMaxHz: Double = 4.2
-
-    private static let hrExpectedHz: Double  = 0.158 // 10 samples/min
-    private static let hrMinHz: Double  = 0.083 // 5 samples/min
-    private static let hrMaxHz: Double  = 1.0 // 60 samples/min
-
     private static let windowLength = Constants.modelWindowLength
+    private static let trackedSignals: Set<Signal> = [.bvp, .gsr, .heartRate]
 
-    private static var gsrBufferSize: Int = {
-        return Int(ceil(gsrMaxHz * windowLength))
-    }()
-
-    private static var hrBufferSize: Int = {
-        return Int(ceil(hrMaxHz * windowLength))
-    }()
-
-    private static var gsrBuffer: Circular<SignalSample>!
-    private static var hrBuffer: Circular<SignalSample>!
+    private static var debugNoiseTimers: [Signal: DispatchSourceTimer] = [:]
+    private static var lastSamples: [Signal: SignalSample] = [:]
+    private static var buffers: [Signal: Circular<SignalSample>]!
 
     static func setup() {
-        gsrBuffer = Circular<SignalSample>(capacity: gsrBufferSize, placeholder: .dummy)
-        hrBuffer = Circular<SignalSample>(capacity: hrBufferSize, placeholder: .dummy)
+        buffers = [:]
+        for s in trackedSignals {
+            let capacity = Int(ceil(s.frequency.max * windowLength))
+            buffers[s] = Circular<SignalSample>(capacity: capacity, placeholder: .dummy)
+        }
     }
 
     static func generateSnapshot() throws -> SignalsSnapshot {
@@ -83,49 +67,37 @@ class SignalAcquisition {
         let timestampEnd = Date().timeIntervalSince1970
         let timestampBeg = timestampEnd - windowLength
 
-        var gsrSamples = gsrBuffer.toArray()
-        var hrSamples = hrBuffer.toArray()
-
-        gsrSamples.sort { $0.timestamp < $1.timestamp }
-        hrSamples.sort { $0.timestamp < $1.timestamp }
-
-        // Filter out samples that are too old (outside the window)
-        gsrSamples = gsrSamples.filter { $0.timestamp >= timestampBeg }
-        hrSamples = hrSamples.filter { $0.timestamp >= timestampBeg }
-
-        let gsrMinCount = Int(gsrMinHz * windowLength)
-        let hrMinCount = Int(hrMinHz * windowLength)
-
-        if gsrSamples.count < gsrMinCount || hrSamples.count < hrMinCount {
-            throw SignalAcquisitionError.snapshotGenerationFailed("""
-                Valid GSR samples: \(gsrSamples.count)/\(gsrMinCount)
-                Valid HR samples: \(hrSamples.count)/\(hrMinCount)
-            """)
+        let rawSignals = buffers.mapValues { buffer -> [Double] in
+            // Sort samples by timestamp
+            let sorted = buffer.toArray().sorted { $0.timestamp < $1.timestamp }
+            // Filter out samples that are too old (outside the window)
+            let filtered = sorted.filter { $0.timestamp >= timestampBeg }
+            // Return the raw values of the signal
+            return filtered.map { $0.value }
         }
 
-        // TODO: We might also want to fill 'holes' between samples of HR
-        // ...
+        let errors = rawSignals.compactMap { (signal, samples) -> String? in
+            let minCount = Int(signal.frequency.min * windowLength)
+            if samples.count >= minCount { return nil }
+            let freq = Double(samples.count) / windowLength
+            return "Valid \(signal) samples: \(samples.count)/\(minCount) (\(round(freq)))"
+        }
 
-        let rawGsrSamples = gsrSamples.map { $0.value }
-        let rawHrSamples = hrSamples.map { $0.value }
+        if errors.count > 0 {
+            throw SignalAcquisitionError.snapshotGenerationFailed(errors.joined(separator: "\n"))
+        }
 
         return SignalsSnapshot(
             timestampBeg: timestampBeg,
             timestampEnd: timestampEnd,
-            gsrSamples: rawGsrSamples,
-            hrSamples: rawHrSamples
+            samples: rawSignals
         )
     }
 
     static func addSample(_ sample: SignalSample) {
         assert(Thread.isMainThread)
         lastSamples[sample.signal] = sample
-
-        if sample.signal == .gsr {
-            gsrBuffer.push(sample)
-        } else if sample.signal == .heartRate {
-            hrBuffer.push(sample)
-        }
+        buffers[sample.signal]?.push(sample)
     }
 
     static func addSample(value: Double, timestamp: Double, signal: Signal) {
@@ -140,26 +112,25 @@ class SignalAcquisition {
 extension SignalAcquisition {
 
     static func startDebugNoise() {
-        if debugNoiseTimer?.isActive == true { return }
 
-        let step: TimeInterval = (1.0 / debugNoiseHz)
+        for signal in Signal.all {
+            if debugNoiseTimers[signal]?.isActive == true { continue }
 
-        debugNoiseTimer = DispatchSource.makeTimerSource(flags: .strict, queue: .main)
-        debugNoiseTimer?.schedule(deadline: .now(), repeating: step, leeway: .milliseconds(5))
-        debugNoiseTimer?.setEventHandler {
-
-            let timestamp = CFUnixTimeGetCurrent()
-            Signal.all.forEach { sig in
+            let step: TimeInterval = 1.0 / signal.frequency.avg
+            let timer = DispatchSource.makeTimerSource(flags: .strict, queue: .main)
+            timer.schedule(deadline: .now(), repeating: step, leeway: .microseconds(100))
+            timer.setEventHandler {
                 // Noise between -1.0 and +1.0
                 let noise = (Double(arc4random_uniform(2000)) - 1000.0) / 1000.0
-                let val = sig.meanExpValue + (sig.amplitudeExpValue * noise)
-                addSample(value: val, timestamp: timestamp, signal: sig)
+                let val = signal.meanExpValue + (signal.amplitudeExpValue * noise)
+                addSample(value: val, timestamp: CFUnixTimeGetCurrent(), signal: signal)
             }
+            timer.resume()
+            debugNoiseTimers[signal] = timer
         }
-        debugNoiseTimer?.resume()
     }
 
     static func stopDebugNoise() {
-        debugNoiseTimer?.cancel()
+        debugNoiseTimers.forEach { $1.cancel() }
     }
 }

@@ -36,11 +36,11 @@ class SignalsSnapshot: Codable {
         return Double(hrSamples.count) / length
     }
 
-    init(timestampBeg: TimeInterval, timestampEnd: TimeInterval, gsrSamples: [Double], hrSamples: [Double]) {
+    init(timestampBeg: TimeInterval, timestampEnd: TimeInterval, samples: [Signal: [Double]]) {
         self.timestampBeg = timestampBeg
         self.timestampEnd = timestampEnd
-        self.gsrSamples = gsrSamples
-        self.hrSamples = hrSamples
+        self.gsrSamples = samples[.gsr] ?? []
+        self.hrSamples = samples[.heartRate] ?? []
     }
 
     func computeGsrMean() -> Double {
@@ -99,8 +99,7 @@ class FakeStressedSS: SignalsSnapshot {
         return FakeStressedSS(
             timestampBeg: now - Constants.modelWindowLength,
             timestampEnd: now,
-            gsrSamples: [],
-            hrSamples: []
+            samples: [:]
         )
     }
 
@@ -134,8 +133,7 @@ class FakeNotStressedSS: SignalsSnapshot {
         return FakeNotStressedSS(
             timestampBeg: now - Constants.modelWindowLength,
             timestampEnd: now,
-            gsrSamples: [],
-            hrSamples: []
+            samples: [:]
         )
     }
 
