@@ -58,10 +58,7 @@ class SignalAcquisition {
         assert(Thread.isMainThread)
 
         if Constants.useFakeSnapshots {
-            // DEBUG ONLY
-            let fakeSnapshot = (arc4random()%2 == 0) ? FakeStressedSS.random() : FakeNotStressedSS.random()
-            print("Generated fake snapshot of type: \(fakeSnapshot)")
-            return fakeSnapshot
+            return DummySignalsSnapshot() // DEBUG ONLY
         }
 
         let timestampEnd = Date().timeIntervalSince1970

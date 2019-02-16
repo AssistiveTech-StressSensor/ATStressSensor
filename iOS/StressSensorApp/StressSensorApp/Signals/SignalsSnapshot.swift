@@ -88,72 +88,42 @@ class SignalsSnapshot: Codable {
 }
 
 
-
-
 /// DEBUG ONLY
-class FakeStressedSS: SignalsSnapshot {
+class DummySignalsSnapshot: SignalsSnapshot {
 
-    /// DEBUG ONLY
-    static func random() -> FakeStressedSS {
+    var stressed = false
+
+    init() {
         let now = Date().timeIntervalSince1970
-        return FakeStressedSS(
+        super.init(
             timestampBeg: now - Constants.modelWindowLength,
             timestampEnd: now,
             samples: [:]
         )
+        stressed = (arc4random() % 2 == 0)
+    }
+
+    required init(from decoder: Decoder) throws {
+        fatalError("init(from:) has not been implemented")
     }
 
     override func computeGsrMean() -> Double {
         let noise = (Double(arc4random()%100) - 20)*0.01
-        return 3.0 + noise
+        return (stressed ? 3.0 : 1.0) + noise
     }
 
     override func computeGsrLocals() -> Double {
         let noise = (Double(arc4random()%100) - 50)*0.0002
-        return (0.1 + noise) * length
+        return ((stressed ? 0.1 : 0.04) + noise) * length
     }
 
     override func computeHrMean() -> Double {
-        let noise = (Double(arc4random()%100) - 20)*0.2
-        return 110.0 + noise
+        let noise = (Double(arc4random()%100) - (stressed ? 20 : 50))*0.2
+        return (stressed ? 110.0 : 70.0) + noise
     }
 
     override func computeHrMeanDerivative() -> Double {
         let noise = (Double(arc4random()%100) - 50)*0.002
-        return 0.5 + noise
-    }
-}
-
-/// DEBUG ONLY
-class FakeNotStressedSS: SignalsSnapshot {
-
-    /// DEBUG ONLY
-    static func random() -> FakeNotStressedSS {
-        let now = Date().timeIntervalSince1970
-        return FakeNotStressedSS(
-            timestampBeg: now - Constants.modelWindowLength,
-            timestampEnd: now,
-            samples: [:]
-        )
-    }
-
-    override func computeGsrMean() -> Double {
-        let noise = (Double(arc4random()%100) - 20)*0.01
-        return 1.0 + noise
-    }
-
-    override func computeGsrLocals() -> Double {
-        let noise = (Double(arc4random()%100) - 50)*0.0002
-        return (0.04 + noise) * length
-    }
-
-    override func computeHrMean() -> Double {
-        let noise = (Double(arc4random()%100) - 50)*0.2
-        return 70.0 + noise
-    }
-
-    override func computeHrMeanDerivative() -> Double {
-        let noise = (Double(arc4random()%100) - 50)*0.002
-        return 0.1 + noise
+        return (stressed ? 0.5 : 0.1) + noise
     }
 }
