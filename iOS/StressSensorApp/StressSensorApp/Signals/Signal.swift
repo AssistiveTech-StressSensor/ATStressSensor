@@ -61,6 +61,31 @@ enum Signal {
         ]
     }()
 
+    var shortName: String {
+        switch self {
+        case .temperature:
+            return "Temp."
+        case .accelerationZ:
+            return "Z''"
+        case .accelerationY:
+            return "Y''"
+        case .accelerationX:
+            return "X''"
+        case .batteryLevel:
+            return "Bttr."
+        case .gsr:
+            return "GSR"
+        case .bvp:
+            return "BVP"
+        case .ibi:
+            return "IBI"
+        case .heartRate:
+            return "HR"
+        case .dummy:
+            return "Fake"
+        }
+    }
+
     var frequency: SignalFrequency {
         switch self {
         case .accelerationZ, .accelerationY, .accelerationX:

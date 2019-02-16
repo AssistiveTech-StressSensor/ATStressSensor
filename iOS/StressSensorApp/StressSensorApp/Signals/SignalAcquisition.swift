@@ -76,8 +76,7 @@ class SignalAcquisition {
         let errors = rawSignals.compactMap { (signal, samples) -> String? in
             let minCount = Int(signal.frequency.min * windowLength)
             if samples.count >= minCount { return nil }
-            let freq = Double(samples.count) / windowLength
-            return "Valid \(signal) samples: \(samples.count)/\(minCount) (\(round(freq)))"
+            return "Valid \(signal.shortName) samples: \(samples.count)/\(minCount)"
         }
 
         if errors.count > 0 {
