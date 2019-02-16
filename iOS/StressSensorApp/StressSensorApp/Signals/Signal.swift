@@ -8,6 +8,33 @@
 
 import Foundation
 
+struct SignalFrequency: ExpressibleByArrayLiteral {
+    typealias ArrayLiteralElement = Double
+    let min, avg, max: Double
+    let isKnown: Bool
+
+    static var unknown: SignalFrequency {
+        return SignalFrequency(known: false)
+    }
+
+    init(min: Double = 0.0, avg: Double = 1.0, max: Double = .infinity, known: Bool = true) {
+        self.min = min
+        self.avg = avg
+        self.max = max
+        self.isKnown = known
+    }
+
+    init(arrayLiteral elements: SignalFrequency.ArrayLiteralElement...) {
+        if elements.count != 3 {
+            fatalError("Signal frequency must be specified as three values (min, avg, max).")
+        }
+        self.min = elements[0]
+        self.avg = elements[1]
+        self.max = elements[2]
+        self.isKnown = true
+    }
+}
+
 enum Signal {
     case gsr
     case bvp
@@ -33,6 +60,21 @@ enum Signal {
             .batteryLevel
         ]
     }()
+
+    var frequency: SignalFrequency {
+        switch self {
+        case .accelerationZ, .accelerationY, .accelerationX:
+            return [30.5, 32.0, 33.5]
+        case .gsr, .temperature:
+            return [3.8, 4.0, 4.2]
+        case .bvp:
+            return [61.0, 64.0, 67.0]
+        case .ibi, .heartRate:
+            return [0.083, 0.158, 1.0]
+        default:
+            return .unknown
+        }
+    }
 
     var meanExpValue: Double {
         switch self {
@@ -81,10 +123,11 @@ enum Signal {
         return sum / Double(samples.count)
     }
 
-    static func computeDerivative(_ samples: [Double]) -> [Double] {
+    static func computeDerivative(_ samples: [Double], dt: Double = 1.0) -> [Double] {
         var deriv = [Double]()
         for i in 1..<samples.count {
-            deriv.append(samples[i]-samples[i-1])
+            let val = (samples[i] - samples[i-1]) * dt
+            deriv.append(val)
         }
         return deriv
     }
