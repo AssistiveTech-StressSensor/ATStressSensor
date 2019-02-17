@@ -19,7 +19,7 @@ env:
 
 before_install:
   - rvm install ruby-2.2.2
-  - gem install cocoapods
+  - gem install cocoapods -v 1.5.3
   - gem install xcpretty -N
 # - brew update
 # - brew install swiftlint || true
