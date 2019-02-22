@@ -19,3 +19,7 @@ def download_database(filepath=None):
         with open(filepath, 'wb') as fout:
             pickle.dump(raw_data, fout)
     return raw_data
+
+
+if __name__ == '__main__':
+    download_database('data.pkl')

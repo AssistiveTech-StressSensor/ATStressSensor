@@ -1,0 +1,7 @@
+numpy
+pandas
+seaborn
+jupyter
+matplotlib
+sklearn
+firebase-admin
