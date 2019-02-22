@@ -31,9 +31,10 @@ struct SignalSample {
     let value: Double
     let timestamp: Double
     let signal: Signal
+    let isNoise: Bool
 
     static var dummy: SignalSample {
-        return SignalSample(value: 0, timestamp: 0, signal: .dummy)
+        return SignalSample(value: 0, timestamp: 0, signal: .dummy, isNoise: true)
     }
 }
 
@@ -63,12 +64,15 @@ class SignalAcquisition {
 
         let timestampEnd = Date().timeIntervalSince1970
         let timestampBeg = timestampEnd - windowLength
+        var hasNoise = false
 
         let rawSignals = buffers.mapValues { buffer -> [Double] in
             // Sort samples by timestamp
             let sorted = buffer.toArray().sorted { $0.timestamp < $1.timestamp }
             // Filter out samples that are too old (outside the window)
             let filtered = sorted.filter { $0.timestamp >= timestampBeg }
+            // Check if signal contains noise
+            hasNoise = hasNoise || filtered.contains { $0.isNoise }
             // Return the raw values of the signal
             return filtered.map { $0.value }
         }
@@ -86,7 +90,8 @@ class SignalAcquisition {
         return SignalsSnapshot(
             timestampBeg: timestampBeg,
             timestampEnd: timestampEnd,
-            samples: rawSignals
+            samples: rawSignals,
+            hasNoise: hasNoise
         )
     }
 
@@ -96,8 +101,8 @@ class SignalAcquisition {
         buffers[sample.signal]?.push(sample)
     }
 
-    static func addSample(value: Double, timestamp: Double, signal: Signal) {
-        addSample(SignalSample(value: value, timestamp: timestamp, signal: signal))
+    static func addSample(value: Double, timestamp: Double, signal: Signal, isNoise: Bool=false) {
+        addSample(SignalSample(value: value, timestamp: timestamp, signal: signal, isNoise: isNoise))
     }
 
     static func readLastSample(for signal: Signal) -> SignalSample? {
@@ -119,7 +124,7 @@ extension SignalAcquisition {
                 // Noise between -1.0 and +1.0
                 let noise = (Double(arc4random_uniform(2000)) - 1000.0) / 1000.0
                 let val = signal.meanExpValue + (signal.amplitudeExpValue * noise)
-                addSample(value: val, timestamp: CFUnixTimeGetCurrent(), signal: signal)
+                addSample(value: val, timestamp: CFUnixTimeGetCurrent(), signal: signal, isNoise: true)
             }
             timer.resume()
             debugNoiseTimers[signal] = timer

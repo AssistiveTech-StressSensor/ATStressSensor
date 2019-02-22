@@ -16,6 +16,7 @@ class SignalsSnapshot: Encodable {
 
     let timestampBeg: TimeInterval
     let timestampEnd: TimeInterval
+    let hasNoise: Bool
 
     lazy var length: TimeInterval = {
         return timestampEnd - timestampBeg
@@ -37,12 +38,13 @@ class SignalsSnapshot: Encodable {
         return Double(hrSamples.count) / length
     }
 
-    init(timestampBeg: TimeInterval, timestampEnd: TimeInterval, samples: [Signal: [Double]]) {
+    init(timestampBeg: TimeInterval, timestampEnd: TimeInterval, samples: [Signal: [Double]], hasNoise: Bool) {
         self.timestampBeg = timestampBeg
         self.timestampEnd = timestampEnd
         self.gsrSamples = samples[.gsr] ?? []
         self.hrSamples = samples[.heartRate] ?? []
         self.bvpSamples = samples[.bvp] ?? []
+        self.hasNoise = hasNoise
     }
 
     func computeGsrMean() -> Double {
@@ -71,6 +73,7 @@ class SignalsSnapshot: Encodable {
         case gsrSamples = "gsr_samples"
         case hrSamples = "hr_samples"
         case bvpSamples = "bvp_samples"
+        case hasNoise = "noise"
     }
 
     func encode(to encoder: Encoder) throws {
@@ -80,6 +83,7 @@ class SignalsSnapshot: Encodable {
         try container.encode(gsrSamples, forKey: .gsrSamples)
         try container.encode(hrSamples, forKey: .hrSamples)
         try container.encode(bvpSamples, forKey: .bvpSamples)
+        try container.encode(hasNoise, forKey: .hasNoise)
     }
 }
 
@@ -94,7 +98,8 @@ class DummySignalsSnapshot: SignalsSnapshot {
         super.init(
             timestampBeg: now - Constants.modelWindowLength,
             timestampEnd: now,
-            samples: [:]
+            samples: [:],
+            hasNoise: true
         )
         stressed = (arc4random() % 2 == 0)
     }
