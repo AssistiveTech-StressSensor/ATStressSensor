@@ -11,6 +11,21 @@ import Firebase
 import FirebaseAuth
 import FirebaseDatabase
 
+
+private protocol LoggerEntry: Encodable {
+    var snapshot: SignalsSnapshot { get }
+    var userID: String { get }
+    var timestamp: TimeInterval { get }
+}
+
+
+private enum LoggerDataType: String {
+    case energy = "energy_data"
+    case stress = "data"
+    case quadrant = "quadrant_data"
+}
+
+
 class ModelLogger {
 
     private static let userIDKey = "firebase.userID"
@@ -23,48 +38,65 @@ class ModelLogger {
         return enabled && userID != nil
     }
 
-    private struct StressEntry: Encodable {
+    private struct StressEntry: LoggerEntry {
         let snapshot: SignalsSnapshot
-        let sample: ModelSample
-        let sleepQuality: SleepQuality?
-        let foodIntake: FoodIntake?
-        let additionalNotes: String?
-        let label: StressLevel
-        let user_id: String
-        let timestamp: TimeInterval
-    }
-
-    private struct EnergyEntry: Encodable {
-        let snapshot: SignalsSnapshot
-        let sample: ModelSample
-        let label: EnergyLevel
-        let questionnaireResults: Questionnaire.Results
         let userID: String
         let timestamp: TimeInterval
 
+        let sample: ModelSample
+        let label: StressLevel
+        let sleepQuality: SleepQuality?
+        let foodIntake: FoodIntake?
+        let additionalNotes: String?
+
         enum CodingKeys: String, CodingKey {
             case snapshot
+            case userID = "user_id"
+            case timestamp
+
             case sample
             case label
-            case timestamp
+            case sleepQuality
+            case foodIntake
+            case additionalNotes
+        }
+    }
+
+    private struct EnergyEntry: LoggerEntry {
+        let snapshot: SignalsSnapshot
+        let userID: String
+        let timestamp: TimeInterval
+
+        let sample: ModelSample
+        let label: EnergyLevel
+        let questionnaireResults: Questionnaire.Results
+
+        enum CodingKeys: String, CodingKey {
+            case snapshot
             case userID = "user_id"
+            case timestamp
+
+            case sample
+            case label
             case questionnaireResults = "questionnaire_results"
         }
     }
 
-    private struct QuadrantEntry: Encodable {
+    private struct QuadrantEntry: LoggerEntry {
         let snapshot: SignalsSnapshot
-        let sample: ModelSample
-        let label: QuadrantValue
         let userID: String
         let timestamp: TimeInterval
 
+        let sample: ModelSample
+        let label: QuadrantValue
+
         enum CodingKeys: String, CodingKey {
             case snapshot
+            case userID = "user_id"
+            case timestamp
+
             case sample
             case label
-            case timestamp
-            case userID = "user_id"
         }
     }
 
@@ -162,75 +194,49 @@ class ModelLogger {
 
     static func logStress(snapshot: SignalsSnapshot, sample: ModelSample, stressLevel: StressLevel,
                     sleepQuality: SleepQuality? = nil, foodIntake: FoodIntake? = nil, additionalNotes: String? = nil) {
-
-        guard canLog, let userID = userID else { return }
-
-        let userRef = Database.database().reference(withPath: "users/\(userID)")
-        let now = Date().timeIntervalSince1970
-
-        let entry = StressEntry(
+        guard let userID = userID else { return }
+        logEntry(StressEntry(
             snapshot: snapshot,
+            userID: userID,
+            timestamp: Date().timeIntervalSince1970,
             sample: sample,
+            label: stressLevel,
             sleepQuality: sleepQuality,
             foodIntake: foodIntake,
-            additionalNotes: additionalNotes,
-            label: stressLevel,
-            user_id: userID,
-            timestamp: now
-        )
-
-        let dataSampleRef = userRef.child("data").childByAutoId()
-
-        dataSampleRef.updateChildValues([
-            "js_data": entry.asJSON()!,
-            "timestamp": now
-        ])
+            additionalNotes: additionalNotes
+        ), dataType: .stress)
     }
 
     static func logEnergy(snapshot: SignalsSnapshot, sample: ModelSample, energyLevel: EnergyLevel, details: Questionnaire.Results) {
-
-        guard canLog, let userID = userID else { return }
-
-        let userRef = Database.database().reference(withPath: "users/\(userID)")
-        let now = Date().timeIntervalSince1970
-
-        let entry = EnergyEntry(
+        guard let userID = userID else { return }
+        logEntry(EnergyEntry(
             snapshot: snapshot,
+            userID: userID,
+            timestamp: Date().timeIntervalSince1970,
             sample: sample,
             label: energyLevel,
-            questionnaireResults: details,
-            userID: userID,
-            timestamp: now
-        )
-
-        let dataSampleRef = userRef.child("energy_data").childByAutoId()
-
-        dataSampleRef.updateChildValues([
-            "js_data": entry.asJSON()!,
-            "timestamp": now
-        ])
+            questionnaireResults: details
+        ), dataType: .energy)
     }
 
     static func logQuadrant(snapshot: SignalsSnapshot, sample: ModelSample, value: QuadrantValue) {
-
-        guard canLog, let userID = userID else { return }
-
-        let userRef = Database.database().reference(withPath: "users/\(userID)")
-        let now = Date().timeIntervalSince1970
-
-        let entry = QuadrantEntry(
+        guard let userID = userID else { return }
+        logEntry(QuadrantEntry(
             snapshot: snapshot,
-            sample: sample,
-            label: value,
             userID: userID,
-            timestamp: now
-        )
+            timestamp: Date().timeIntervalSince1970,
+            sample: sample,
+            label: value
+        ), dataType: .quadrant)
+    }
 
-        let dataSampleRef = userRef.child("quadrant_data").childByAutoId()
-
+    private static func logEntry(_ entry: LoggerEntry, dataType: LoggerDataType) {
+        guard canLog else { return }
+        let userRef = Database.database().reference(withPath: "users/\(entry.userID)")
+        let dataSampleRef = userRef.child(dataType.rawValue).childByAutoId()
         dataSampleRef.updateChildValues([
             "js_data": entry.asJSON()!,
-            "timestamp": now
+            "timestamp": entry.timestamp
         ])
     }
 }
