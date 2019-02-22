@@ -13,16 +13,10 @@ import FirebaseDatabase
 
 
 private protocol LoggerEntry: Encodable {
+    static var databaseLabel: String { get }
     var snapshot: SignalsSnapshot { get }
     var userID: String { get }
     var timestamp: TimeInterval { get }
-}
-
-
-private enum LoggerDataType: String {
-    case energy = "energy_data"
-    case stress = "data"
-    case quadrant = "quadrant_data"
 }
 
 
@@ -39,6 +33,7 @@ class ModelLogger {
     }
 
     private struct StressEntry: LoggerEntry {
+        static let databaseLabel = "data"
         let snapshot: SignalsSnapshot
         let userID: String
         let timestamp: TimeInterval
@@ -63,6 +58,7 @@ class ModelLogger {
     }
 
     private struct EnergyEntry: LoggerEntry {
+        static let databaseLabel = "energy_data"
         let snapshot: SignalsSnapshot
         let userID: String
         let timestamp: TimeInterval
@@ -83,6 +79,7 @@ class ModelLogger {
     }
 
     private struct QuadrantEntry: LoggerEntry {
+        static let databaseLabel = "quadrant_data"
         let snapshot: SignalsSnapshot
         let userID: String
         let timestamp: TimeInterval
@@ -204,7 +201,7 @@ class ModelLogger {
             sleepQuality: sleepQuality,
             foodIntake: foodIntake,
             additionalNotes: additionalNotes
-        ), dataType: .stress)
+        ))
     }
 
     static func logEnergy(snapshot: SignalsSnapshot, sample: ModelSample, energyLevel: EnergyLevel, details: Questionnaire.Results) {
@@ -216,7 +213,7 @@ class ModelLogger {
             sample: sample,
             label: energyLevel,
             questionnaireResults: details
-        ), dataType: .energy)
+        ))
     }
 
     static func logQuadrant(snapshot: SignalsSnapshot, sample: ModelSample, value: QuadrantValue) {
@@ -227,13 +224,14 @@ class ModelLogger {
             timestamp: Date().timeIntervalSince1970,
             sample: sample,
             label: value
-        ), dataType: .quadrant)
+        ))
     }
 
-    private static func logEntry(_ entry: LoggerEntry, dataType: LoggerDataType) {
+    private static func logEntry(_ entry: LoggerEntry) {
         guard canLog else { return }
+        let dbLabel = type(of: entry).databaseLabel
         let userRef = Database.database().reference(withPath: "users/\(entry.userID)")
-        let dataSampleRef = userRef.child(dataType.rawValue).childByAutoId()
+        let dataSampleRef = userRef.child(dbLabel).childByAutoId()
         dataSampleRef.updateChildValues([
             "js_data": entry.asJSON()!,
             "timestamp": entry.timestamp
