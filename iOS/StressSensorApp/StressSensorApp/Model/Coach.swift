@@ -75,7 +75,7 @@ class Coach {
 
         if active, nextCheck < Date() {
 
-            if let snapshot = try? SignalAcquisition.generateSnapshot() {
+            if let snapshot = try? SignalAcquisition.generateSnapshot(), snapshot.hasNoise == false {
                 Coach.notify(with: snapshot)
                 resetInterval()
             } else {

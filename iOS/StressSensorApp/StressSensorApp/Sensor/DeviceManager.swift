@@ -163,6 +163,7 @@ extension DeviceManager: EmpaticaDeviceDelegate {
             SignalAcquisition.addSample(value: Double(ibi), timestamp: timestamp, signal: .ibi)
             SignalAcquisition.addSample(value: 60.0/Double(ibi), timestamp: timestamp, signal: .heartRate)
             Coach.fireIfNeeded()
+            AutoLogger.fireIfNeeded()
         }
     }
 

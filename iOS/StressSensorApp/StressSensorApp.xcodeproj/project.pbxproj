@@ -37,6 +37,7 @@
 		23ADED4A2035DCDA00E2A7F3 /* StressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED492035DCDA00E2A7F3 /* StressModel.swift */; };
 		23ADED4C20360FE600E2A7F3 /* TrainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED4B20360FE600E2A7F3 /* TrainViewController.swift */; };
 		23ADED4E20362BE500E2A7F3 /* SignalsSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED4D20362BE500E2A7F3 /* SignalsSnapshot.swift */; };
+		23AE2BAD22202AEE00A0A29E /* AutoLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE2BAC22202AEE00A0A29E /* AutoLogger.swift */; };
 		23B5DA9E202CC92100D22352 /* LiveChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B5DA9D202CC92100D22352 /* LiveChart.swift */; };
 		23B5DAA0202CFD9200D22352 /* SignalAcquisition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B5DA9F202CFD9200D22352 /* SignalAcquisition.swift */; };
 		23B5DAA2202CFDBB00D22352 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B5DAA1202CFDBB00D22352 /* Signal.swift */; };
@@ -112,6 +113,7 @@
 		23ADED492035DCDA00E2A7F3 /* StressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressModel.swift; sourceTree = "<group>"; };
 		23ADED4B20360FE600E2A7F3 /* TrainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainViewController.swift; sourceTree = "<group>"; };
 		23ADED4D20362BE500E2A7F3 /* SignalsSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalsSnapshot.swift; sourceTree = "<group>"; };
+		23AE2BAC22202AEE00A0A29E /* AutoLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoLogger.swift; sourceTree = "<group>"; };
 		23B5DA9D202CC92100D22352 /* LiveChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveChart.swift; sourceTree = "<group>"; };
 		23B5DA9F202CFD9200D22352 /* SignalAcquisition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignalAcquisition.swift; sourceTree = "<group>"; };
 		23B5DAA1202CFDBB00D22352 /* Signal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signal.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				23CFB2B7208DEB86000B93F2 /* EnergyModel.swift */,
 				2398C370220DF2350000800D /* QuadrantModel.swift */,
 				23A96D7020C6994100D32A02 /* Coach.swift */,
+				23AE2BAC22202AEE00A0A29E /* AutoLogger.swift */,
 				23681E242039FBF400F39507 /* ModelLogger.swift */,
 				23F3BC2F20864EBF004B4EC4 /* Questionnaire.swift */,
 				23CFB2B5208DD948000B93F2 /* QuestionnaireManager.swift */,
@@ -665,6 +668,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				23CFB2BB208DF292000B93F2 /* SVM.mm in Sources */,
+				23AE2BAD22202AEE00A0A29E /* AutoLogger.swift in Sources */,
 				23681E252039FBF400F39507 /* ModelLogger.swift in Sources */,
 				23ADED4A2035DCDA00E2A7F3 /* StressModel.swift in Sources */,
 				23CFB2B6208DD948000B93F2 /* QuestionnaireManager.swift in Sources */,

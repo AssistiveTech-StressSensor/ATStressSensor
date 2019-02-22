@@ -33,6 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         EnergyModel.main.setup()
         SignalAcquisition.setup()
         ModelLogger.setup()
+        AutoLogger.activate()
 
         let options: UNAuthorizationOptions  = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().delegate = self

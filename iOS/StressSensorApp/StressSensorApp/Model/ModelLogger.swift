@@ -97,6 +97,19 @@ class ModelLogger {
         }
     }
 
+    private struct UnlabeledEntry: LoggerEntry {
+        static let databaseLabel = "unlabeled_data"
+        let snapshot: SignalsSnapshot
+        let userID: String
+        let timestamp: TimeInterval
+
+        enum CodingKeys: String, CodingKey {
+            case snapshot
+            case userID = "user_id"
+            case timestamp
+        }
+    }
+
     static func setup() {
 
         if Secret.isValid {
@@ -224,6 +237,15 @@ class ModelLogger {
             timestamp: Date().timeIntervalSince1970,
             sample: sample,
             label: value
+        ))
+    }
+
+    static func logUnlabeled(snapshot: SignalsSnapshot) {
+        guard let userID = userID else { return }
+        logEntry(UnlabeledEntry(
+            snapshot: snapshot,
+            userID: userID,
+            timestamp: Date().timeIntervalSince1970
         ))
     }
 
