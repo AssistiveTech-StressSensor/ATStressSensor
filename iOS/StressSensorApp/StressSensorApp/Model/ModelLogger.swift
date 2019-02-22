@@ -23,7 +23,7 @@ class ModelLogger {
         return enabled && userID != nil
     }
 
-    private struct StressEntry: Codable {
+    private struct StressEntry: Encodable {
         let snapshot: SignalsSnapshot
         let sample: ModelSample
         let sleepQuality: SleepQuality?
@@ -34,7 +34,7 @@ class ModelLogger {
         let timestamp: TimeInterval
     }
 
-    private struct EnergyEntry: Codable {
+    private struct EnergyEntry: Encodable {
         let snapshot: SignalsSnapshot
         let sample: ModelSample
         let label: EnergyLevel
@@ -52,7 +52,7 @@ class ModelLogger {
         }
     }
 
-    private struct QuadrantEntry: Codable {
+    private struct QuadrantEntry: Encodable {
         let snapshot: SignalsSnapshot
         let sample: ModelSample
         let label: QuadrantValue

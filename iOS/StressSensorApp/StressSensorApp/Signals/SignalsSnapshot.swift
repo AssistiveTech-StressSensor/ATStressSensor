@@ -8,10 +8,11 @@
 
 import Foundation
 
-class SignalsSnapshot: Codable {
+class SignalsSnapshot: Encodable {
 
     let gsrSamples: [Double]
     let hrSamples: [Double]
+    let bvpSamples: [Double]
 
     let timestampBeg: TimeInterval
     let timestampEnd: TimeInterval
@@ -41,6 +42,7 @@ class SignalsSnapshot: Codable {
         self.timestampEnd = timestampEnd
         self.gsrSamples = samples[.gsr] ?? []
         self.hrSamples = samples[.heartRate] ?? []
+        self.bvpSamples = samples[.bvp] ?? []
     }
 
     func computeGsrMean() -> Double {
@@ -68,14 +70,7 @@ class SignalsSnapshot: Codable {
         case timestampEnd = "timestamp_end"
         case gsrSamples = "gsr_samples"
         case hrSamples = "hr_samples"
-    }
-
-    required init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        timestampBeg = try values.decode(Double.self, forKey: .timestampBeg)
-        timestampEnd = try values.decode(Double.self, forKey: .timestampEnd)
-        gsrSamples = try values.decode(Array.self, forKey: .gsrSamples)
-        hrSamples = try values.decode(Array.self, forKey: .hrSamples)
+        case bvpSamples = "bvp_samples"
     }
 
     func encode(to encoder: Encoder) throws {
@@ -84,6 +79,7 @@ class SignalsSnapshot: Codable {
         try container.encode(timestampEnd, forKey: .timestampEnd)
         try container.encode(gsrSamples, forKey: .gsrSamples)
         try container.encode(hrSamples, forKey: .hrSamples)
+        try container.encode(bvpSamples, forKey: .bvpSamples)
     }
 }
 
