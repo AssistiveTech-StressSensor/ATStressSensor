@@ -21,8 +21,10 @@ class AutoLogger {
     private static var curInterval: TimeInterval = -1.0
 
     static func activate() {
-        active = true
-        resetInterval()
+        if !active {
+            resetInterval()
+            active = true
+        }
     }
 
     static func deactivate() {

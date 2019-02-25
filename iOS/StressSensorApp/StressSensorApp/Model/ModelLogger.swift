@@ -19,12 +19,18 @@ private protocol LoggerEntry: Encodable {
     var timestamp: TimeInterval { get }
 }
 
+enum UserClearance: String {
+    case dev
+    case user
+}
+
 
 class ModelLogger {
 
     private static let userIDKey = "firebase.userID"
 
     static var userID: String?
+    static var userClearance: UserClearance = .user
 
     static var enabled: Bool = true
 
@@ -125,7 +131,11 @@ class ModelLogger {
                         print("Firebase auth: failure (\(error.localizedDescription))")
                     } else {
                         print("Firebase auth: success")
-                        ModelLogger.createUserIfNeeded()
+                        ModelLogger.createUserIfNeeded() { _ in
+                            ModelLogger.getUserClearance() { clearance in
+                                ModelLogger.userClearance = clearance ?? .user
+                            }
+                        }
                     }
                 }
             )
@@ -133,6 +143,23 @@ class ModelLogger {
         } else {
             print("Firebase auth: skipped (credentials not found)")
         }
+    }
+
+    static func getUserClearance(_ completion: ((UserClearance?) -> Void)?) {
+
+        guard let userID = userID else {
+            completion?(nil)
+            return
+        }
+
+        let ref = Database.database().reference(withPath: "users/\(userID)/clearance")
+        ref.observeSingleEvent(of: .value, with: { s in
+            if let value = s.value as? String {
+                completion?(UserClearance(rawValue: value))
+            } else {
+                completion?(nil)
+            }
+        })
     }
 
     static func getNickname(_ completion: @escaping (String?) -> Void) {
@@ -177,13 +204,14 @@ class ModelLogger {
         })
     }
 
-    static func createUserIfNeeded(force: Bool = false) {
+    static func createUserIfNeeded(force: Bool = false, completion: @escaping (Bool) -> Void) {
 
-        guard userID == nil else { return }
+        guard userID == nil else { return completion(false) }
         let existingUserID = UserDefaults().value(forKey: userIDKey) as? String
 
         if !force && existingUserID != nil {
             self.userID = existingUserID
+            completion(true)
         } else {
 
             let usersRef = Database.database().reference(withPath: "users")
@@ -191,12 +219,16 @@ class ModelLogger {
             let userID = userRef.key
 
             usersRef.updateChildValues(["/\(userID)": [
-                "first_name": "Mario"
+                "first_name": "-",
+                "clearance": UserClearance.user.rawValue
             ]]) { error, ref in
 
                 if error == nil {
                     UserDefaults().set(userID, forKey: userIDKey)
                     self.userID = userID
+                    completion(true)
+                } else {
+                    completion(false)
                 }
             }
         }

@@ -10,6 +10,8 @@ import UIKit
 
 class DayViewController: UIViewController {
 
+    @IBOutlet var devMenuButton: UIBarButtonItem!
+
     @IBOutlet weak var chartGSR: LiveChart!
     @IBOutlet weak var chartBVP: LiveChart!
     @IBOutlet weak var chartTemp: LiveChart!
@@ -23,6 +25,22 @@ class DayViewController: UIViewController {
         super.viewDidLoad()
         charts = [chartGSR, chartBVP, chartTemp, chartIBI, chartHR]
         setChartsAppearance()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if ModelLogger.userClearance == .dev {
+            navigationItem.rightBarButtonItem = devMenuButton
+        } else {
+            navigationItem.rightBarButtonItem = nil
+        }
+    }
+
+    @IBAction
+    func displayDebugMenu(_ sender: Any? = nil) {
+        DebugMenu.present(on: self) { [weak self] in
+            self?.checkForDebugNoise()
+        }
     }
 
     func setChartsAppearance() {
@@ -96,8 +114,8 @@ class DayViewController: UIViewController {
         setChartsAppearance()
     }
 
-    @IBAction func toggleNoisePressed(_ uiSwitch: UISwitch) {
-        if uiSwitch.isOn {
+    func checkForDebugNoise() {
+        if Constants.addNoiseToSignals {
             SignalAcquisition.startDebugNoise()
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         } else {
