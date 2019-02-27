@@ -10,29 +10,30 @@ import UIKit
 
 struct DebugMenu {
 
-    static func present(on controller: UIViewController, completion: (() -> Void)?) {
+    static func present(on controller: UIViewController) {
 
+        let state = mainStore.state.debug
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let actions = [
             UIAlertAction(
-                title: "Add noise to signals (\(Constants.addNoiseToSignals))",
+                title: "Add noise to signals (\(state.addNoiseToSignals))",
                 style: .default,
-                handler: { _ in Constants.addNoiseToSignals = !Constants.addNoiseToSignals; completion?() }
+                handler: { _ in mainStore.safeDispatch(Actions.AddNoiseToSignals(value: !state.addNoiseToSignals)) }
             ),
             UIAlertAction(
-                title: "Use fake snapshots (\(Constants.useFakeSnapshots))",
+                title: "Use fake snapshots (\(state.useFakeSnapshots))",
                 style: .default,
-                handler: { _ in Constants.useFakeSnapshots = !Constants.useFakeSnapshots; completion?() }
+                handler: { _ in mainStore.safeDispatch(Actions.UseFakeSnapshots(value: !state.useFakeSnapshots)) }
             ),
             UIAlertAction(
-                title: "Disable cooldown (\(Constants.disableCooldown))",
+                title: "Disable cooldown (\(state.disableCooldown))",
                 style: .default,
-                handler: { _ in Constants.disableCooldown = !Constants.disableCooldown; completion?() }
+                handler: { _ in mainStore.safeDispatch(Actions.DisableCooldown(value: !state.disableCooldown)) }
             ),
             UIAlertAction(
                 title: "Cancel",
                 style: .cancel,
-                handler: { _ in completion?() }
+                handler: nil
             )
         ]
         actions.forEach { actionSheet.addAction($0) }

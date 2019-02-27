@@ -14,6 +14,7 @@ target 'StressSensorApp' do
   pod 'Firebase/Database', '4.3.0'
   pod 'Firebase/Auth', '4.3.0'
   pod 'ResearchKit', '~> 1.0'
+  pod 'ReSwift', '~> 4.0.1'
 
   target 'StressSensorAppTests' do
     inherit! :search_paths

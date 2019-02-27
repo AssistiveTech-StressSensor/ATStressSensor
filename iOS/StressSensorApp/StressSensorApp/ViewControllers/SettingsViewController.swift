@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import ReSwift
 
-class SettingsViewController: UITableViewController {
+class SettingsViewController: UITableViewController, StoreSubscriber {
 
     @IBOutlet weak var batteryLevelLabel: UILabel!
     @IBOutlet weak var userIdentifierLabel: UILabel!
@@ -20,35 +21,32 @@ class SettingsViewController: UITableViewController {
     @IBOutlet weak var authenticateButton: UIButton!
 
     var isConnectedToDevice: Bool {
-        return DeviceManager.main.status == .connected
+        return mainStore.state.device.linkStatus == .connected
     }
 
     var isAuthenticatedWithEmpatica: Bool {
-        return DeviceManager.main.isAuthenticatedWithEmpatica
+        return mainStore.state.device.authenticated
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        DeviceManager.main.statusChangeHandler = self.updateViews
-
         let tapGR = UITapGestureRecognizer(target: self, action: #selector(changeLoggerNickname))
         loggerNicknameLabel.superview?.addGestureRecognizer(tapGR)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        updateViews()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mainStore.subscribe(self)
+        updateNickname()
+        updateLoggedEntries()
     }
 
-    func updateLoggedEntries() {
-        ModelLogger.getCurrentLoggedEntries { [weak self] (stressCount, energyCount) in
-            DispatchQueue.main.async {
-                self?.loggerEntriesLabel.text = "\(stressCount)|\(energyCount)"
-            }
-        }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        mainStore.unsubscribe(self)
     }
 
-    func updateViews(_ status: DeviceManagerStatus) {
+    func newState(state: AppState) {
 
         if isConnectedToDevice {
             connectDisconnectButton.setTitle("Disconnect", for: .init(rawValue: 0))
@@ -58,7 +56,7 @@ class SettingsViewController: UITableViewController {
 
         authenticateButton.isEnabled = !isAuthenticatedWithEmpatica
 
-        switch status {
+        switch state.device.linkStatus {
         case .connecting:
             authenticateButton.isEnabled = false
             connectDisconnectButton.isEnabled = false
@@ -75,24 +73,22 @@ class SettingsViewController: UITableViewController {
             connectDisconnectButton.setTitle("Discovering...", for: .init(rawValue: 0))
         }
 
-        updateBatteryLevel()
-        userIdentifierLabel.text = ModelLogger.userID ?? "-"
-        loggerLabel.text = ModelLogger.canLog ? "YES" : "NO"
-        authenticatedLabel.text = isAuthenticatedWithEmpatica ? "YES" : "NO"
-        updateLoggedEntries()
-        updateNickname()
-    }
-
-    func updateViews() {
-        let status = DeviceManager.main.status
-        updateViews(status)
-    }
-
-    func updateBatteryLevel() {
         if let level = DeviceManager.main.batteryLevel {
             batteryLevelLabel.text = "\(Int(level*100))%"
         } else {
             batteryLevelLabel.text = "-"
+        }
+
+        userIdentifierLabel.text = state.user.userID ?? "-"
+        loggerLabel.text = ModelLogger.canLog ? "YES" : "NO"
+        authenticatedLabel.text = isAuthenticatedWithEmpatica ? "YES" : "NO"
+    }
+
+    func updateLoggedEntries() {
+        ModelLogger.getCurrentLoggedEntries { [weak self] (stressCount, energyCount) in
+            DispatchQueue.main.async {
+                self?.loggerEntriesLabel.text = "\(stressCount)|\(energyCount)"
+            }
         }
     }
 
@@ -182,9 +178,7 @@ class SettingsViewController: UITableViewController {
 
     @IBAction func authenticatePressed(_ sender: Any) {
 
-        if isAuthenticatedWithEmpatica {
-            updateViews()
-        } else {
+        if !isAuthenticatedWithEmpatica {
 
             let alert = UIAlertController(title: "Authenticating...", message: nil, preferredStyle: .alert)
             present(alert, animated: true, completion: nil)

@@ -9,7 +9,7 @@
 import UIKit
 import UserNotifications
 
-enum DeviceManagerStatus {
+enum DeviceLinkStatus {
     case disconnected
     case connected
     case connecting
@@ -20,22 +20,26 @@ enum DeviceManagerStatus {
 class DeviceManager: NSObject {
 
     static let main = DeviceManager()
-
     private override init() {}
 
-    var statusChangeHandler: ((DeviceManagerStatus) -> Void)?
-
-    var status: DeviceManagerStatus = .disconnected {
-        didSet { statusChangeHandler?(status) }
+    var linkStatus: DeviceLinkStatus {
+        return mainStore.state.device.linkStatus
     }
-    private(set) var batteryLevel: Float?
-    private(set) var isAuthenticatedWithEmpatica: Bool = false
+
+    var batteryLevel: Float? {
+        return mainStore.state.device.batteryLevel
+    }
+
+    var authenticated: Bool {
+        return mainStore.state.device.authenticated
+    }
+
     private var device: EmpaticaDeviceManager?
 
     func setup(_ completion: ((Bool) -> ())? = nil) {
-        EmpaticaAPI.authenticate(withAPIKey: Constants.empaticaApiKey) { [weak self] success, details in
+        EmpaticaAPI.authenticate(withAPIKey: Constants.empaticaApiKey) { success, details in
             print("EmpaticaAPI auth: \( success ? "success" : "failure" )")
-            self?.isAuthenticatedWithEmpatica = success
+            mainStore.safeDispatch(DeviceActions.SetAuthenticated(value: success))
             completion?(success)
         }
     }
@@ -57,7 +61,11 @@ class DeviceManager: NSObject {
     }
 
     private func invalidateDeviceInfo() {
-        batteryLevel = nil
+        mainStore.safeDispatch(DeviceActions.InvalidateDeviceInfo())
+    }
+
+    private func setLinkStatus(_ linkStatus: DeviceLinkStatus) {
+        mainStore.safeDispatch(DeviceActions.SetLinkStatus(value: linkStatus))
     }
 }
 
@@ -85,12 +93,12 @@ extension DeviceManager: EmpaticaDelegate {
         switch status {
         case kBLEStatusNotAvailable:
             print("Bluetooth low energy not available.")
-            self.status = .disconnected
+            self.setLinkStatus(.disconnected)
         case kBLEStatusReady:
             print("Bluetooth low energy ready.")
         case kBLEStatusScanning:
             print("Bluetooth low energy scanning for devices...")
-            self.status = .discovering
+            self.setLinkStatus(.discovering)
         default:
             return
         }
@@ -101,7 +109,7 @@ extension DeviceManager: EmpaticaDelegate {
 
         if devices.isEmpty {
             print("No devices found in range.")
-            self.status = .disconnected
+            self.setLinkStatus(.disconnected)
         } else {
             // Connect to first device found that is authorized w/ current API key
             device = devices.first { $0.allowed }
@@ -116,17 +124,17 @@ extension DeviceManager: EmpaticaDeviceDelegate {
         switch status {
         case kDeviceStatusDisconnected:
             print("Device disconnected.")
-            self.status = .disconnected
+            self.setLinkStatus(.disconnected)
             self.notifyForDisconnection()
         case kDeviceStatusConnecting:
             print("Device connecting...")
-            self.status = .connecting
+            self.setLinkStatus(.connecting)
         case kDeviceStatusConnected:
             print("Device connected.")
-            self.status = .connected
+            self.setLinkStatus(.connected)
         case kDeviceStatusDisconnecting:
             print("Device disconnecting...")
-            self.status = .disconnecting
+            self.setLinkStatus(.disconnecting)
         default:
             return
         }
@@ -140,10 +148,7 @@ extension DeviceManager: EmpaticaDeviceDelegate {
     }
 
     func didReceiveBatteryLevel(_ level: Float, withTimestamp timestamp: Double, fromDevice device: EmpaticaDeviceManager!) {
-        DispatchQueue.main.sync { [weak self] in
-            self?.batteryLevel = level
-            self?.statusChangeHandler?(status)
-        }
+        mainStore.safeDispatch(DeviceActions.SetBatteryLevel(value: level))
     }
 
     func didReceiveGSR(_ gsr: Float, withTimestamp timestamp: Double, fromDevice device: EmpaticaDeviceManager!) {

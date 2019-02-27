@@ -66,7 +66,7 @@ class TrainViewController: UIViewController {
 
     @IBAction func teachEnergy() {
 
-        if !Constants.disableCooldown && EnergyModel.main.cooldown {
+        if !mainStore.state.debug.disableCooldown && EnergyModel.main.cooldown {
             presentGenericError("An energy sample was added recently. Please try again later.")
         } else if let snapshot = getSnapshotIfAllowed() {
             questionnaireManager = QuestionnaireManager()
@@ -81,7 +81,7 @@ class TrainViewController: UIViewController {
 
     @IBAction func teachStress() {
 
-        if !Constants.disableCooldown && StressModel.main.cooldown {
+        if !mainStore.state.debug.disableCooldown && StressModel.main.cooldown {
             presentGenericError("A stress sample was added recently. Please try again later.")
         } else if let snapshot = getSnapshotIfAllowed() {
             AddSampleViewController.present(on: self, stressLevel: nil, snapshot: snapshot) { [unowned self] completed in
@@ -94,7 +94,7 @@ class TrainViewController: UIViewController {
 
     @IBAction func teachQuadrant() {
 
-        if !Constants.disableCooldown && QuadrantModel.main.cooldown {
+        if !mainStore.state.debug.disableCooldown && QuadrantModel.main.cooldown {
             presentGenericError("A quadrant sample was added recently. Please try again later.")
         } else if let snapshot = getSnapshotIfAllowed() {
             QuadrantViewController.present(on: self, snapshot: snapshot) { [unowned self] completed in

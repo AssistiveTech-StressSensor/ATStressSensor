@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import ReSwift
 
-class DayViewController: UIViewController {
+class DayViewController: UIViewController, StoreSubscriber {
 
     @IBOutlet var devMenuButton: UIBarButtonItem!
 
@@ -27,20 +28,36 @@ class DayViewController: UIViewController {
         setChartsAppearance()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if ModelLogger.userClearance == .dev {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mainStore.subscribe(self)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        mainStore.unsubscribe(self)
+    }
+
+    func newState(state: AppState) {
+
+        if state.user.userClearance == .dev {
             navigationItem.rightBarButtonItem = devMenuButton
         } else {
             navigationItem.rightBarButtonItem = nil
+        }
+
+        if state.debug.addNoiseToSignals {
+            SignalAcquisition.startDebugNoise()
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        } else {
+            SignalAcquisition.stopDebugNoise()
+            UINotificationFeedbackGenerator().notificationOccurred(.warning)
         }
     }
 
     @IBAction
     func displayDebugMenu(_ sender: Any? = nil) {
-        DebugMenu.present(on: self) { [weak self] in
-            self?.checkForDebugNoise()
-        }
+        DebugMenu.present(on: self)
     }
 
     func setChartsAppearance() {
@@ -112,16 +129,6 @@ class DayViewController: UIViewController {
     @IBAction func clearPressed() {
         charts.forEach { $0.clear() }
         setChartsAppearance()
-    }
-
-    func checkForDebugNoise() {
-        if Constants.addNoiseToSignals {
-            SignalAcquisition.startDebugNoise()
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-        } else {
-            SignalAcquisition.stopDebugNoise()
-            UINotificationFeedbackGenerator().notificationOccurred(.warning)
-        }
     }
 
     @IBAction func toggleAcquisitionPressed(_ uiSwitch: UISwitch) {

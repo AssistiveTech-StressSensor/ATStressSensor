@@ -15,7 +15,7 @@ class StressSensorAppTests: XCTestCase {
         super.setUp()
 
         // Disable remote logger
-        ModelLogger.userID = "test"
+        mainStore.dispatch(Actions.ChangeUserID(userID: "test"))
         ModelLogger.enabled = false
     }
     
@@ -24,8 +24,8 @@ class StressSensorAppTests: XCTestCase {
     }
 
     func testDebugConstants() {
-        XCTAssertFalse(Constants.disableCooldown)
-        XCTAssertFalse(Constants.useFakeSnapshots)
+        XCTAssertFalse(mainStore.state.debug.disableCooldown)
+        XCTAssertFalse(mainStore.state.debug.useFakeSnapshots)
         XCTAssertFalse(Secret.isValid)
     }
 

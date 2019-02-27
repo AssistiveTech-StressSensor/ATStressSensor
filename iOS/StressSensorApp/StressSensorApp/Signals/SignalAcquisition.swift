@@ -58,7 +58,7 @@ class SignalAcquisition {
     static func generateSnapshot() throws -> SignalsSnapshot {
         assert(Thread.isMainThread)
 
-        if Constants.useFakeSnapshots {
+        if mainStore.state.debug.useFakeSnapshots {
             return DummySignalsSnapshot() // DEBUG ONLY
         }
 

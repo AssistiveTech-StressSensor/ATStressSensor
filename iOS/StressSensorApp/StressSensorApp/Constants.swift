@@ -20,12 +20,6 @@ struct Constants {
 
     static let cooldownLength: TimeInterval = 2*60.0 // 2 minutes
 
-    static var disableCooldown = false
-
-    static var useFakeSnapshots = false
-
-    static var addNoiseToSignals = false
-
     static let documentsPath: String = {
         return NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
     }()

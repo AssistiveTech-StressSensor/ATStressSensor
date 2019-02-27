@@ -28,11 +28,15 @@ enum UserClearance: String {
 class ModelLogger {
 
     private static let userIDKey = "firebase.userID"
-
-    static var userID: String?
-    static var userClearance: UserClearance = .user
-
     static var enabled: Bool = true
+
+    static var userID: String? {
+        return mainStore.state.user.userID
+    }
+
+    static var userClearance: UserClearance {
+        return mainStore.state.user.userClearance
+    }
 
     static var canLog: Bool {
         return enabled && userID != nil
@@ -132,9 +136,7 @@ class ModelLogger {
                     } else {
                         print("Firebase auth: success")
                         ModelLogger.createUserIfNeeded() { _ in
-                            ModelLogger.getUserClearance() { clearance in
-                                ModelLogger.userClearance = clearance ?? .user
-                            }
+                            ModelLogger.getUserClearance()
                         }
                     }
                 }
@@ -145,20 +147,15 @@ class ModelLogger {
         }
     }
 
-    static func getUserClearance(_ completion: ((UserClearance?) -> Void)?) {
-
-        guard let userID = userID else {
-            completion?(nil)
-            return
-        }
-
+    static func getUserClearance() {
+        guard let userID = userID else { return }
         let ref = Database.database().reference(withPath: "users/\(userID)/clearance")
         ref.observeSingleEvent(of: .value, with: { s in
+            var clearance: UserClearance? = nil
             if let value = s.value as? String {
-                completion?(UserClearance(rawValue: value))
-            } else {
-                completion?(nil)
+                clearance = UserClearance(rawValue: value)
             }
+            mainStore.safeDispatch(Actions.ChangeUserClearance(userClearance: clearance ?? .user))
         })
     }
 
@@ -210,7 +207,7 @@ class ModelLogger {
         let existingUserID = UserDefaults().value(forKey: userIDKey) as? String
 
         if !force && existingUserID != nil {
-            self.userID = existingUserID
+            mainStore.safeDispatch(Actions.ChangeUserID(userID: existingUserID))
             completion(true)
         } else {
 
@@ -225,7 +222,7 @@ class ModelLogger {
 
                 if error == nil {
                     UserDefaults().set(userID, forKey: userIDKey)
-                    self.userID = userID
+                    mainStore.safeDispatch(Actions.ChangeUserID(userID: userID))
                     completion(true)
                 } else {
                     completion(false)
