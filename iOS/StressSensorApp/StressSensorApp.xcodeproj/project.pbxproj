@@ -116,6 +116,7 @@
 		23A3105C2224A0D5004BC31A /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		23A31060222A941F004BC31A /* MonitorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorViewController.swift; sourceTree = "<group>"; };
 		23A31062222AA5B9004BC31A /* TableBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBackground.swift; sourceTree = "<group>"; };
+		23A31064222B20AE004BC31A /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = .gitignore; path = ../../../.gitignore; sourceTree = "<group>"; };
 		23A96D7020C6994100D32A02 /* Coach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coach.swift; sourceTree = "<group>"; };
 		23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevEmpaLink.swift; sourceTree = "<group>"; };
 		23ADED492035DCDA00E2A7F3 /* StressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressModel.swift; sourceTree = "<group>"; };
@@ -351,6 +352,7 @@
 			isa = PBXGroup;
 			children = (
 				2385161D2063EBEF00E78029 /* StressSensorApp.entitlements */,
+				23A31064222B20AE004BC31A /* .gitignore */,
 				23681E29203C464D00F39507 /* .travis.yml */,
 				231F4CB21FCF5F5000AE6881 /* Assets.xcassets */,
 				231F4CB41FCF5F5000AE6881 /* LaunchScreen.storyboard */,

@@ -1,4 +1,6 @@
-### Xcode ###
+## Python
+.ipynb_checkpoints/
+__pycache__/
 
 ## Build generated
 build/
