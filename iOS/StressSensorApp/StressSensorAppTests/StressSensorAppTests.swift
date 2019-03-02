@@ -26,6 +26,8 @@ class StressSensorAppTests: XCTestCase {
     func testDebugConstants() {
         XCTAssertFalse(mainStore.state.debug.disableCooldown)
         XCTAssertFalse(mainStore.state.debug.useFakeSnapshots)
+        XCTAssertFalse(mainStore.state.debug.addNoiseToSignals)
+        XCTAssertFalse(mainStore.state.debug.fakePredictions)
         XCTAssertFalse(Secret.isValid)
     }
 

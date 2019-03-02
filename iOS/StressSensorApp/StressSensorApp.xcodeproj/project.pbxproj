@@ -34,6 +34,8 @@
 		23A18BD92032EBF8002D514A /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23A18BD82032EBF8002D514A /* opencv2.framework */; };
 		23A3105A222495E8004BC31A /* DebugMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A31059222495E8004BC31A /* DebugMenu.swift */; };
 		23A3105D2224A0D5004BC31A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A3105C2224A0D5004BC31A /* Store.swift */; };
+		23A31061222A941F004BC31A /* MonitorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A31060222A941F004BC31A /* MonitorViewController.swift */; };
+		23A31063222AA5B9004BC31A /* TableBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A31062222AA5B9004BC31A /* TableBackground.swift */; };
 		23A96D7120C6994100D32A02 /* Coach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A96D7020C6994100D32A02 /* Coach.swift */; };
 		23ADED482033BDD600E2A7F3 /* RevEmpaLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */; };
 		23ADED4A2035DCDA00E2A7F3 /* StressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED492035DCDA00E2A7F3 /* StressModel.swift */; };
@@ -112,6 +114,8 @@
 		23A18BD82032EBF8002D514A /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ThirdPartyLibraries/opencv2.framework; sourceTree = "<group>"; };
 		23A31059222495E8004BC31A /* DebugMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugMenu.swift; sourceTree = "<group>"; };
 		23A3105C2224A0D5004BC31A /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		23A31060222A941F004BC31A /* MonitorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorViewController.swift; sourceTree = "<group>"; };
+		23A31062222AA5B9004BC31A /* TableBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBackground.swift; sourceTree = "<group>"; };
 		23A96D7020C6994100D32A02 /* Coach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coach.swift; sourceTree = "<group>"; };
 		23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevEmpaLink.swift; sourceTree = "<group>"; };
 		23ADED492035DCDA00E2A7F3 /* StressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressModel.swift; sourceTree = "<group>"; };
@@ -315,6 +319,7 @@
 				2309F0B620501CDD00EE651B /* StressChart.swift */,
 				2398C36C220D8BA70000800D /* QuadrantView.swift */,
 				23A31059222495E8004BC31A /* DebugMenu.swift */,
+				23A31062222AA5B9004BC31A /* TableBackground.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -332,9 +337,10 @@
 			isa = PBXGroup;
 			children = (
 				231F4CAD1FCF5F5000AE6881 /* DayViewController.swift */,
-				23E18B04202DE2EF0034134E /* SettingsViewController.swift */,
-				23ADED4B20360FE600E2A7F3 /* TrainViewController.swift */,
+				23A31060222A941F004BC31A /* MonitorViewController.swift */,
 				23681E1F2037306900F39507 /* StressViewController.swift */,
+				23ADED4B20360FE600E2A7F3 /* TrainViewController.swift */,
+				23E18B04202DE2EF0034134E /* SettingsViewController.swift */,
 				2309F0B3204D6FF000EE651B /* AddSampleViewController.swift */,
 				2398C36E220DEE5B0000800D /* QuadrantViewController.swift */,
 			);
@@ -612,6 +618,7 @@
 				23ADED4E20362BE500E2A7F3 /* SignalsSnapshot.swift in Sources */,
 				23F3BC3020864EBF004B4EC4 /* Questionnaire.swift in Sources */,
 				23CFB2BC208DF410000B93F2 /* EnergyModel.swift in Sources */,
+				23A31063222AA5B9004BC31A /* TableBackground.swift in Sources */,
 				23CFB2BA208DEBBF000B93F2 /* ModelSample.swift in Sources */,
 				2398C36F220DEE5B0000800D /* QuadrantViewController.swift in Sources */,
 				23ADED482033BDD600E2A7F3 /* RevEmpaLink.swift in Sources */,
@@ -632,6 +639,7 @@
 				23681E202037306900F39507 /* StressViewController.swift in Sources */,
 				23A3105A222495E8004BC31A /* DebugMenu.swift in Sources */,
 				23681E27203B935D00F39507 /* Circular.swift in Sources */,
+				23A31061222A941F004BC31A /* MonitorViewController.swift in Sources */,
 				23E18B05202DE2EF0034134E /* SettingsViewController.swift in Sources */,
 				2309F0B720501CDD00EE651B /* StressChart.swift in Sources */,
 			);

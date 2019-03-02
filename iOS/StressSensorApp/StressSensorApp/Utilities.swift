@@ -37,21 +37,57 @@ extension UIStoryboard {
 }
 
 extension Encodable {
+
+    func asDictionary() -> [String: Any]? {
+        guard let data = try? JSONEncoder().encode(self) else { return nil }
+        return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments)) as? [String: Any]
+    }
+
     func asJSON() -> String? {
         guard let jsonData = try? JSONEncoder().encode(self) else { return nil }
         return String(data: jsonData, encoding: .utf8)
     }
+
+    func toFile(_ url: URL) throws {
+        let encoded = try JSONEncoder().encode(self)
+        try encoded.write(to: url, options: .atomic)
+    }
+
+    func toFile(_ path: String) throws {
+        try toFile(URL(fileURLWithPath: path))
+    }
+}
+
+extension Decodable {
+    static func fromJSON(_ json: Data) -> Self? {
+        return try? JSONDecoder().decode(Self.self, from: json)
+    }
+
+    static func fromJSON(_ json: String, using encoding: String.Encoding = .utf8) -> Self? {
+        guard let data = json.data(using: encoding) else { return nil }
+        return fromJSON(data)
+    }
+
+    static func fromFile(_ url: URL) -> Self? {
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return fromJSON(data)
+    }
+
+    static func fromFile(_ path: String) -> Self? {
+        return fromFile(URL(fileURLWithPath: path))
+    }
+
 }
 
 extension UIViewController {
 
-    func presentGenericError(_ message: String) {
+    func presentGenericError(_ message: String, completion: ((UIAlertAction) -> ())? = nil) {
         let alert = UIAlertController(
             title: "Oops!",
             message: message,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: completion))
         present(alert, animated: true, completion: nil)
     }
 }

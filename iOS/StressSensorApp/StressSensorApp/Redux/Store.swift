@@ -25,6 +25,7 @@ struct DebugOptionsState: StateType {
     var disableCooldown = false
     var useFakeSnapshots = false
     var addNoiseToSignals = false
+    var fakePredictions = false
 }
 
 struct AppState: StateType {
@@ -44,6 +45,7 @@ struct Actions {
     struct DisableCooldown: DebugAction { let value: Bool }
     struct UseFakeSnapshots: DebugAction { let value: Bool }
     struct AddNoiseToSignals: DebugAction { let value: Bool }
+    struct FakePredictions: DebugAction { let value: Bool }
 }
 
 struct DeviceActions {
@@ -84,6 +86,8 @@ private func debugOptionsReducer(action: DebugAction, state: DebugOptionsState?)
         state.useFakeSnapshots = action.value
     case let action as Actions.AddNoiseToSignals:
         state.addNoiseToSignals = action.value
+    case let action as Actions.FakePredictions:
+        state.fakePredictions = action.value
     default:
         break
     }

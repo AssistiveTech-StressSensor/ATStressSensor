@@ -28,4 +28,8 @@ struct Constants {
         static let dummyEmail = Secret.firebaseEmail
         static let dummyPassword = Secret.firebasePassword
     }
+
+    static let predictionsPath: String = {
+        return "\(Constants.documentsPath)/predictions.json"
+    }()
 }

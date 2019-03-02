@@ -278,6 +278,23 @@ class ModelLogger {
         ))
     }
 
+    static func logPrediction(_ prediction: Prediction, snapshot: SignalsSnapshot? = nil) {
+        guard let userID = userID else { return }
+        guard canLog else { return }
+        let userRef = Database.database().reference(withPath: "users/\(userID)")
+        let dataSampleRef = userRef.child("predictions").child(prediction.identifier)
+
+        var updates: [String: Any] = [
+            "prediction": prediction.asDictionary()!
+        ]
+
+        if let snapshot = snapshot {
+            updates["snapshot_json"] = snapshot.asJSON()!
+        }
+
+        dataSampleRef.updateChildValues(updates)
+    }
+
     private static func logEntry(_ entry: LoggerEntry) {
         guard canLog else { return }
         let dbLabel = type(of: entry).databaseLabel

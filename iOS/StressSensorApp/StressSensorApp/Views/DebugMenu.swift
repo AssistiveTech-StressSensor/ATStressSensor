@@ -31,6 +31,11 @@ struct DebugMenu {
                 handler: { _ in mainStore.safeDispatch(Actions.DisableCooldown(value: !state.disableCooldown)) }
             ),
             UIAlertAction(
+                title: "Fake predictions (\(state.fakePredictions))",
+                style: .default,
+                handler: { _ in mainStore.safeDispatch(Actions.FakePredictions(value: !state.fakePredictions)) }
+            ),
+            UIAlertAction(
                 title: "Cancel",
                 style: .cancel,
                 handler: nil
