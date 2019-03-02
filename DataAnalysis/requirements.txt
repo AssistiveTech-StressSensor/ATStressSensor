@@ -5,3 +5,4 @@ jupyter
 matplotlib
 sklearn
 firebase-admin
+tqdm
