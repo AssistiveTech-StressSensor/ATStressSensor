@@ -7,8 +7,27 @@
 //
 
 import Foundation
+import PromiseKit
 
 typealias EnergyLevel = Double
+
+struct PhysicalEnergy: ExpressibleByFloatLiteral {
+
+    let value: Double
+    var percentage: Double { return value * 100.0 }
+
+    init(floatLiteral value: Double) {
+        self.value = value
+    }
+
+    init(withEnergyLevel level: EnergyLevel) {
+        self.value = PhysicalEnergy.fromEnergyLevel(level)
+    }
+
+    static func fromEnergyLevel(_ level: EnergyLevel) -> Double {
+        return 1.0 - ((level - 0.2) / 0.8)
+    }
+}
 
 /// Dataset object used by the model
 class EnergyModelData: Codable {
@@ -199,6 +218,12 @@ class EnergyModel {
         }
     }
 
+    var canBeTrained: Bool {
+        // FIXME: How to determine when we have enough data for regression?
+        let minNum = Constants.minSamplesPerClass
+        return (samplesCount > minNum && numberOfSamplesAhead > 0)
+    }
+
     /// Must be called before any other instance method of this class
     func setup() {
         importSVR()
@@ -249,15 +274,17 @@ class EnergyModel {
     }
 
     /// Trains async. the model with the provided dataset
-    func train(completion: @escaping () -> ()) {
+    func train() -> Guarantee<Void> {
         let trainingData = data.svrTrainingData
-        svr.train(with: trainingData) { [unowned self] in
-            DispatchQueue.main.async {
-                UserDefaults().setValue(Date(), forKey: self.latestTrainingDateKey)
+        return Guarantee { [unowned self] seal in
+            svr.train(with: trainingData) {
+                DispatchQueue.main.async {
+                    UserDefaults().setValue(Date(), forKey: self.latestTrainingDateKey)
+                }
+                self._numberOfSamplesAhead = 0
+                self.exportSVR()
+                seal(())
             }
-            self._numberOfSamplesAhead = 0
-            self.exportSVR()
-            completion()
         }
     }
 

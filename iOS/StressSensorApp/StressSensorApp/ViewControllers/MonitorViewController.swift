@@ -22,6 +22,11 @@ struct Prediction: Codable {
     var energy: EnergyLevel?
     var feedback: Feedback?
 
+    var physicalEnergy: PhysicalEnergy? {
+        guard let level = energy else { return nil }
+        return PhysicalEnergy(withEnergyLevel: level)
+    }
+
     var identifier: String {
         let timestamp = date.timeIntervalSince1970.description
         return timestamp.replacingOccurrences(of: ".", with: "_")
@@ -66,7 +71,7 @@ class MonitorViewController: UITableViewController {
 
     fileprivate func getSnapshotIfAllowed() -> SignalsSnapshot? {
 
-        let alertCompletion = { [weak self] (action: UIAlertAction) -> Void in
+        let alertCompletion = { [weak self] () -> Void in
             self?.refreshControl?.endRefreshing()
         }
 
@@ -108,7 +113,7 @@ class MonitorViewController: UITableViewController {
         if mainStore.state.debug.fakePredictions {
             let snapshot = DummySignalsSnapshot()
             let stress: StressLevel = snapshot.stressed ? .stressed : .notStressed
-            let energy: EnergyLevel = Double(arc4random() % 100) / 100.0
+            let energy: EnergyLevel = Double(20 + arc4random() % 80) / 100.0
             let prediction = Prediction(date: snapshot.dateEnd, stress: stress, energy: energy, feedback: nil)
             addPrediction(prediction, snapshot: snapshot)
             return
@@ -118,7 +123,7 @@ class MonitorViewController: UITableViewController {
         let energyTrained = EnergyModel.main.isTrained
 
         guard stressTrained || energyTrained else {
-            presentGenericError("The models are not trained yet!") { [weak self] _ in
+            presentGenericError("The models are not trained yet!") { [weak self] in
                 self?.refreshControl?.endRefreshing()
             }
             return

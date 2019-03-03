@@ -15,6 +15,7 @@ target 'StressSensorApp' do
   pod 'Firebase/Auth', '4.3.0'
   pod 'ResearchKit', '~> 1.0'
   pod 'ReSwift', '~> 4.0.1'
+  pod 'PromiseKit', '~> 6.8'
   pod 'Eureka'
 
   target 'StressSensorAppTests' do

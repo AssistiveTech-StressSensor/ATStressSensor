@@ -100,14 +100,14 @@ extension Decodable {
 
 extension UIViewController {
 
-    func presentGenericError(_ message: String, completion: ((UIAlertAction) -> ())? = nil) {
+    func presentGenericError(_ message: String, dismissHandler: ((UIAlertAction) -> ())? = nil, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(
             title: "Oops!",
             message: message,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: completion))
-        present(alert, animated: true, completion: nil)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: dismissHandler))
+        present(alert, animated: true, completion: completion)
     }
 }
 

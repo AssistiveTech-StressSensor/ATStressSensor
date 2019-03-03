@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import PromiseKit
 
 /// Sleep quality 'index' ranging from 0.0 (poor) to 2.0 (good)
 typealias SleepQuality = Double
@@ -272,6 +273,11 @@ class StressModel {
         return Constants.modelWindowLength
     }
 
+    var canBeTrained: Bool {
+        let minNum = Constants.minSamplesPerClass
+        return (notStressedCount >= minNum && stressedCount >= minNum && numberOfSamplesAhead > 0)
+    }
+
     /// Must be called before any other instance method of this class
     func setup() {
         importSVM()
@@ -322,15 +328,17 @@ class StressModel {
     }
 
     /// Trains async. the model with the provided dataset
-    func train(completion: @escaping () -> ()) {
+    func train() -> Guarantee<Void> {
         let trainingData = data.balanced().svmTrainingData
-        svm.autoTrain(with: trainingData) { [unowned self] in
-            DispatchQueue.main.async {
-                UserDefaults().setValue(Date(), forKey: self.latestTrainingDateKey)
+        return Guarantee { [unowned self] seal in
+            svm.autoTrain(with: trainingData) {
+                DispatchQueue.main.async {
+                    UserDefaults().setValue(Date(), forKey: self.latestTrainingDateKey)
+                }
+                self._numberOfSamplesAhead = 0
+                self.exportSVM()
+                seal(())
             }
-            self._numberOfSamplesAhead = 0
-            self.exportSVM()
-            completion()
         }
     }
 

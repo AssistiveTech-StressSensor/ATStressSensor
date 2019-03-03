@@ -48,10 +48,8 @@ class DayViewController: UIViewController, StoreSubscriber {
 
         if state.debug.addNoiseToSignals {
             SignalAcquisition.startDebugNoise()
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
         } else {
             SignalAcquisition.stopDebugNoise()
-            UINotificationFeedbackGenerator().notificationOccurred(.warning)
         }
     }
 

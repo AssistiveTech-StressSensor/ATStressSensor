@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PromiseKit
 
 class TrainViewController: UIViewController {
 
@@ -36,20 +37,6 @@ class TrainViewController: UIViewController {
         statusLabel.text = text
     }
 
-    func canTrainStressModel() -> Bool {
-        let minNum = Constants.minSamplesPerClass
-        let class0 = StressModel.main.notStressedCount
-        let class1 = StressModel.main.stressedCount
-        return (class0 >= minNum && class1 >= minNum)
-    }
-
-    func canTrainEnergyModel() -> Bool {
-        // FIXME: How to determine when we have enough data for regression?
-        let minNum = Constants.minSamplesPerClass
-        let count = EnergyModel.main.samplesCount
-        return count > minNum
-    }
-
     func getSnapshotIfAllowed() -> SignalsSnapshot? {
         let snapshot: SignalsSnapshot
         do {
@@ -70,11 +57,8 @@ class TrainViewController: UIViewController {
             presentGenericError("An energy sample was added recently. Please try again later.")
         } else if let snapshot = getSnapshotIfAllowed() {
             questionnaireManager = QuestionnaireManager()
-            questionnaireManager?.present(on: self, with: snapshot) {
-                [unowned self] completed in
-                if completed {
-                    self.updateStatusLabel()
-                }
+            questionnaireManager?.present(on: self, with: snapshot) { [unowned self] completed in
+                if completed { self.tryToTrain() }
             }
         }
     }
@@ -85,9 +69,7 @@ class TrainViewController: UIViewController {
             presentGenericError("A stress sample was added recently. Please try again later.")
         } else if let snapshot = getSnapshotIfAllowed() {
             AddSampleViewController.present(on: self, stressLevel: nil, snapshot: snapshot) { [unowned self] completed in
-                if completed {
-                    self.updateStatusLabel()
-                }
+                if completed { self.tryToTrain() }
             }
         }
     }
@@ -98,9 +80,7 @@ class TrainViewController: UIViewController {
             presentGenericError("A quadrant sample was added recently. Please try again later.")
         } else if let snapshot = getSnapshotIfAllowed() {
             QuadrantViewController.present(on: self, snapshot: snapshot) { [unowned self] completed in
-                if completed {
-                    self.updateStatusLabel()
-                }
+                if completed { self.tryToTrain() }
             }
         }
     }
@@ -126,96 +106,20 @@ class TrainViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    func trainStressModel(_ sender: Any? = nil) {
+    func tryToTrain() {
+        var guarantees = [Guarantee<Void>]()
 
-        guard canTrainStressModel() else {
-            let minNum = Constants.minSamplesPerClass
-            presentGenericError("Not enough data to train the model! You need at least \(minNum) samples for each class before you can proceed.")
-            return
+        if StressModel.main.canBeTrained {
+            guarantees.append(StressModel.main.train())
         }
 
-        let alert = UIAlertController(
-            title: "Training SVM...",
-            message: "Please don't leave the app during the training.",
-            preferredStyle: .alert
-        )
-
-        present(alert, animated: true, completion: nil)
-
-        OperationQueue().addOperation {
-            // Fake delay for show
-            Thread.sleep(forTimeInterval: 2.0)
-            NSLog("Actually training...")
-            StressModel.main.train {
-                NSLog("Done training.")
-                OperationQueue.main.addOperation { [weak self] in
-                    self?.updateStatusLabel()
-                    alert.dismiss(animated: true, completion: nil)
-                }
-            }
-        }
-    }
-
-    func trainEnergyModel(_ sender: Any? = nil) {
-
-        guard canTrainEnergyModel() else {
-            presentGenericError("Not enough data to train the model!")
-            return
+        if EnergyModel.main.canBeTrained {
+            guarantees.append(EnergyModel.main.train())
         }
 
-        let alert = UIAlertController(
-            title: "Training SVR...",
-            message: "Please don't leave the app during the training.",
-            preferredStyle: .alert
-        )
-
-        present(alert, animated: true, completion: nil)
-
-        OperationQueue().addOperation {
-            // Fake delay for show
-            Thread.sleep(forTimeInterval: 2.0)
-            NSLog("Actually training...")
-            EnergyModel.main.train {
-                NSLog("Done training.")
-                OperationQueue.main.addOperation { [weak self] in
-                    self?.updateStatusLabel()
-                    alert.dismiss(animated: true, completion: nil)
-                }
-            }
+        when(guarantees: guarantees).done { [weak self] in
+            self?.updateStatusLabel()
         }
-    }
-
-    @IBAction func trainPressed() {
-
-        let alert = UIAlertController(
-            title: "Select model to train:",
-            message: nil,
-            preferredStyle: .actionSheet
-        )
-
-        alert.addAction(UIAlertAction(
-            title: "Energy model (SVR)",
-            style: .default,
-            handler: trainEnergyModel
-        ))
-
-        alert.addAction(UIAlertAction(
-            title: "Stress model (SVM)",
-            style: .default,
-            handler: trainStressModel
-        ))
-
-        let qModelButton = UIAlertAction(
-            title: "Quadrant model",
-            style: .default,
-            handler: nil
-        )
-        qModelButton.isEnabled = false
-        alert.addAction(qModelButton)
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-
-        present(alert, animated: true, completion: nil)
     }
 
     @IBAction func exportPressed() {

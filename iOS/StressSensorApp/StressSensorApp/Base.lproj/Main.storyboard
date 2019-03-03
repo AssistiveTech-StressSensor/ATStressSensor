@@ -294,34 +294,11 @@
                                     </label>
                                 </subviews>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dda-Eo-3BK">
-                                <rect key="frame" x="84" y="427" width="152" height="72"/>
-                                <color key="backgroundColor" red="0.38538932402207621" green="0.48734694237614895" blue="0.77249294519424438" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="72" id="c6C-Ua-2sI"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
-                                <state key="normal" title="TRAIN">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="36"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <action selector="trainPressed" destination="vEs-Jn-wdW" eventType="touchUpInside" id="tBx-1J-igv"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Dda-Eo-3BK" firstAttribute="leading" secondItem="5W2-OP-ajM" secondAttribute="leading" constant="84" id="7qm-oU-6oI"/>
                             <constraint firstItem="ld2-NG-cU7" firstAttribute="centerX" secondItem="L8H-Jh-nNV" secondAttribute="centerX" id="9yc-nP-39K"/>
-                            <constraint firstItem="Dda-Eo-3BK" firstAttribute="top" relation="greaterThanOrEqual" secondItem="ld2-NG-cU7" secondAttribute="bottom" constant="15" id="Bcn-6N-olm"/>
                             <constraint firstItem="ld2-NG-cU7" firstAttribute="top" secondItem="5W2-OP-ajM" secondAttribute="top" constant="20" id="Clh-pM-7Ex"/>
-                            <constraint firstItem="5W2-OP-ajM" firstAttribute="trailing" secondItem="Dda-Eo-3BK" secondAttribute="trailing" constant="84" id="dVo-zK-G1e"/>
-                            <constraint firstItem="5W2-OP-ajM" firstAttribute="bottom" secondItem="Dda-Eo-3BK" secondAttribute="bottom" constant="20" id="mtG-1V-fLB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="5W2-OP-ajM"/>
                     </view>
