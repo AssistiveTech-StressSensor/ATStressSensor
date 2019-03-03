@@ -21,6 +21,7 @@ class DayViewController: UIViewController, StoreSubscriber {
 
     private var charts: [LiveChart]!
     private var pollingTimer: DispatchSourceTimer?
+    var consentManager: ConsentManager?
 
     override func viewDidLoad() {
         super.viewDidLoad()

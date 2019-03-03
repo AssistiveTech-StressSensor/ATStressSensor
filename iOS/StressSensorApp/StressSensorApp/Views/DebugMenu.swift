@@ -36,6 +36,16 @@ struct DebugMenu {
                 handler: { _ in mainStore.safeDispatch(Actions.FakePredictions(value: !state.fakePredictions)) }
             ),
             UIAlertAction(
+                title: "Present visual consent",
+                style: .default,
+                handler: { _ in
+                    if let vc = controller as? DayViewController {
+                        vc.consentManager = ConsentManager()
+                        vc.consentManager?.present(on: vc)
+                    }
+                }
+            ),
+            UIAlertAction(
                 title: "Cancel",
                 style: .cancel,
                 handler: nil

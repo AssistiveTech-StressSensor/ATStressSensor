@@ -39,6 +39,7 @@
 		23A31067222B3F17004BC31A /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A31066222B3F17004BC31A /* FeedbackViewController.swift */; };
 		23A31069222BDDB8004BC31A /* MonitorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23A31068222BDDB8004BC31A /* MonitorCell.xib */; };
 		23A3106D222BEC1E004BC31A /* MonitorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A3106C222BEC1E004BC31A /* MonitorCell.swift */; };
+		23A3106F222C4A83004BC31A /* ConsentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A3106E222C4A83004BC31A /* ConsentManager.swift */; };
 		23A96D7120C6994100D32A02 /* Coach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A96D7020C6994100D32A02 /* Coach.swift */; };
 		23ADED482033BDD600E2A7F3 /* RevEmpaLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */; };
 		23ADED4A2035DCDA00E2A7F3 /* StressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED492035DCDA00E2A7F3 /* StressModel.swift */; };
@@ -123,6 +124,7 @@
 		23A31066222B3F17004BC31A /* FeedbackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
 		23A31068222BDDB8004BC31A /* MonitorCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MonitorCell.xib; sourceTree = "<group>"; };
 		23A3106C222BEC1E004BC31A /* MonitorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorCell.swift; sourceTree = "<group>"; };
+		23A3106E222C4A83004BC31A /* ConsentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentManager.swift; sourceTree = "<group>"; };
 		23A96D7020C6994100D32A02 /* Coach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coach.swift; sourceTree = "<group>"; };
 		23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevEmpaLink.swift; sourceTree = "<group>"; };
 		23ADED492035DCDA00E2A7F3 /* StressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressModel.swift; sourceTree = "<group>"; };
@@ -229,6 +231,7 @@
 				2314D0362091F25E00A35C10 /* Credentials */,
 				231F4CDF1FCF6AB700AE6881 /* Constants.swift */,
 				231F4CAB1FCF5F5000AE6881 /* AppDelegate.swift */,
+				23A3106E222C4A83004BC31A /* ConsentManager.swift */,
 				231F4CAF1FCF5F5000AE6881 /* Main.storyboard */,
 				23B5DAA8202D1E5100D22352 /* ViewControllers */,
 				23B5DAA6202D1E1500D22352 /* Views */,
@@ -632,6 +635,7 @@
 				23CFB2B6208DD948000B93F2 /* QuestionnaireManager.swift in Sources */,
 				23ADED4C20360FE600E2A7F3 /* TrainViewController.swift in Sources */,
 				23ADED4E20362BE500E2A7F3 /* SignalsSnapshot.swift in Sources */,
+				23A3106F222C4A83004BC31A /* ConsentManager.swift in Sources */,
 				23F3BC3020864EBF004B4EC4 /* Questionnaire.swift in Sources */,
 				23CFB2BC208DF410000B93F2 /* EnergyModel.swift in Sources */,
 				23A31063222AA5B9004BC31A /* TableBackground.swift in Sources */,
@@ -841,7 +845,7 @@
 					"$(PROJECT_DIR)/ThirdPartyLibraries",
 				);
 				INFOPLIST_FILE = StressSensorApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = se.assistivetech.StressSensorApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -868,7 +872,7 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = s;
 				INFOPLIST_FILE = StressSensorApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = se.assistivetech.StressSensorApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
