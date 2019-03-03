@@ -40,43 +40,6 @@ extension Array where Element == Prediction {
     }
 }
 
-class MonitorCell: UITableViewCell {
-    static let cellID = "MonitorCellID"
-
-    @IBOutlet weak var stressLabel: UILabel!
-    @IBOutlet weak var energyLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
-
-    static func dequeue(for tableView: UITableView, at indexPath: IndexPath) -> MonitorCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
-        return cell as! MonitorCell
-    }
-
-    func configure(for prediction: Prediction) {
-        
-        var stress = "Unknown"
-        if prediction.stress == .stressed {
-            stress = "Moderate"
-        } else if prediction.stress == .notStressed {
-            stress = "Low"
-        }
-        stressLabel.text = "Stress level: \(stress)"
-
-        var energy = "Unknown"
-        if let level = prediction.energy {
-            energy = "\(round(level * 100))%"
-        }
-        energyLabel.text = "Energy level: \(energy)"
-
-        let f = DateFormatter()
-        f.dateStyle = .short
-        f.timeStyle = .short
-        f.doesRelativeDateFormatting = true
-        f.locale = Locale(identifier: "en")
-        dateLabel.text = f.string(from: prediction.date)
-    }
-}
-
 class MonitorViewController: UITableViewController {
 
     private var predictions = [Prediction].load()
@@ -88,9 +51,10 @@ class MonitorViewController: UITableViewController {
         refreshControl?.addTarget(self, action:#selector(MonitorViewController.refresh(_:)), for: .valueChanged)
 
         setNeedsBackgroundUpdate()
+        MonitorCell.register(for: tableView)
     }
 
-    func setNeedsBackgroundUpdate() {
+    fileprivate func setNeedsBackgroundUpdate() {
         if predictions.isEmpty {
             tableView.backgroundView = SimpleTableBackgroundView(frame: view.bounds, title: "Pull to predict!")
             tableView.separatorStyle = .none
@@ -100,7 +64,7 @@ class MonitorViewController: UITableViewController {
         }
     }
 
-    func getSnapshotIfAllowed() -> SignalsSnapshot? {
+    fileprivate func getSnapshotIfAllowed() -> SignalsSnapshot? {
 
         let alertCompletion = { [weak self] (action: UIAlertAction) -> Void in
             self?.refreshControl?.endRefreshing()
@@ -119,18 +83,25 @@ class MonitorViewController: UITableViewController {
         return snapshot
     }
 
+    fileprivate func modifyPrediction(_ newPrediction: Prediction, index: Int) {
+        predictions[index] = newPrediction
+        try? predictions.save()
+        ModelLogger.logPrediction(newPrediction)
+        tableView.reloadData()
+    }
+
+    fileprivate func addPrediction(_ prediction: Prediction, snapshot: SignalsSnapshot?) {
+        predictions.append(prediction)
+        try? predictions.save()
+        ModelLogger.logPrediction(prediction, snapshot: snapshot)
+
+        refreshControl?.endRefreshing()
+        setNeedsBackgroundUpdate()
+        tableView.reloadData()
+    }
+
     @objc
     private func refresh(_ sender: Any? = nil) {
-
-        func handlePrediction(_ prediction: Prediction, snapshot: SignalsSnapshot?) {
-            predictions.append(prediction)
-            try? predictions.save()
-            ModelLogger.logPrediction(prediction, snapshot: snapshot)
-
-            refreshControl?.endRefreshing()
-            setNeedsBackgroundUpdate()
-            tableView.reloadData()
-        }
 
         refreshControl?.beginRefreshing()
 
@@ -139,7 +110,7 @@ class MonitorViewController: UITableViewController {
             let stress: StressLevel = snapshot.stressed ? .stressed : .notStressed
             let energy: EnergyLevel = Double(arc4random() % 100) / 100.0
             let prediction = Prediction(date: snapshot.dateEnd, stress: stress, energy: energy, feedback: nil)
-            handlePrediction(prediction, snapshot: snapshot)
+            addPrediction(prediction, snapshot: snapshot)
             return
         }
 
@@ -165,7 +136,7 @@ class MonitorViewController: UITableViewController {
                 prediction.energy = EnergyModel.main.predict(on: snapshot)
             }
 
-            handlePrediction(prediction, snapshot: snapshot)
+            addPrediction(prediction, snapshot: snapshot)
         }
     }
 }
@@ -199,5 +170,20 @@ extension MonitorViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        var pred = prediction(for: indexPath)
+        let predIndex = predictionIndex(for: indexPath)
+
+        let vc = FeedbackViewController.instantiate()
+        vc.configure(with: pred) { [weak self] confirmed, feedback in
+            if confirmed {
+                pred.feedback = feedback
+                self?.modifyPrediction(pred, index: predIndex)
+            }
+            vc.dismiss(animated: true, completion: nil)
+        }
+
+        let nav = UINavigationController(rootViewController: vc)
+        present(nav, animated: true, completion: nil)
     }
 }

@@ -36,6 +36,19 @@ extension UIStoryboard {
     }
 }
 
+protocol StoryboardInstantiable where Self: UIViewController {
+    associatedtype instantiableType: UIViewController = Self
+    static var instantiableID: String { get }
+    static func instantiate() -> instantiableType
+}
+
+extension StoryboardInstantiable {
+    static func instantiate() -> instantiableType {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        return sb.instantiateViewController(withIdentifier: instantiableID) as! instantiableType
+    }
+}
+
 extension Encodable {
 
     func asDictionary() -> [String: Any]? {
@@ -59,6 +72,12 @@ extension Encodable {
 }
 
 extension Decodable {
+
+    static func fromDictionary(_ dict: [String: Any]) -> Self? {
+        guard let data = try? JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted) else { return nil }
+        return fromJSON(data)
+    }
+
     static func fromJSON(_ json: Data) -> Self? {
         return try? JSONDecoder().decode(Self.self, from: json)
     }

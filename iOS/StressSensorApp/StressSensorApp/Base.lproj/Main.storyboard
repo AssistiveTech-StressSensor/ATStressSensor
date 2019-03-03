@@ -1062,62 +1062,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="MonitorCellID" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MonitorCellID" rowHeight="72" id="CgI-mg-gA8" customClass="MonitorCell" customModule="StressSensorApp" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="320" height="72"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CgI-mg-gA8" id="qUv-Rt-RZh">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="71.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="Ajg-Lm-JLh">
-                                            <rect key="frame" x="16" y="8" width="164.5" height="55.5"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Energy level: Unknown" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i3G-zW-Haf">
-                                                    <rect key="frame" x="0.0" y="0.0" width="164.5" height="19.5"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Stress level: Unknown" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zkm-sZ-qZv">
-                                                    <rect key="frame" x="0.0" y="20.5" width="159.5" height="19.5"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Today, at 20:22" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CYH-vy-Z07">
-                                                    <rect key="frame" x="0.0" y="41" width="87.5" height="14.5"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </stackView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="✍️" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V7e-H0-uMh">
-                                            <rect key="frame" x="268" y="18" width="36" height="36"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="V7e-H0-uMh" secondAttribute="height" id="nrh-js-NAp"/>
-                                                <constraint firstAttribute="height" constant="36" id="uJV-JA-F0G"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="Ajg-Lm-JLh" firstAttribute="centerY" secondItem="qUv-Rt-RZh" secondAttribute="centerY" id="551-sY-LTx"/>
-                                        <constraint firstItem="V7e-H0-uMh" firstAttribute="centerY" secondItem="qUv-Rt-RZh" secondAttribute="centerY" id="mE0-uO-ezv"/>
-                                        <constraint firstItem="V7e-H0-uMh" firstAttribute="trailing" secondItem="qUv-Rt-RZh" secondAttribute="trailingMargin" id="vhL-vo-8yg"/>
-                                        <constraint firstItem="Ajg-Lm-JLh" firstAttribute="leading" secondItem="qUv-Rt-RZh" secondAttribute="leading" constant="16" id="ydF-lR-xXE"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="dateLabel" destination="CYH-vy-Z07" id="3uX-8S-dgR"/>
-                                    <outlet property="energyLabel" destination="i3G-zW-Haf" id="veS-xS-P94"/>
-                                    <outlet property="stressLabel" destination="Zkm-sZ-qZv" id="9hg-eX-ikQ"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="s5I-SP-OuB" id="sN5-1L-A6s"/>
                             <outlet property="delegate" destination="s5I-SP-OuB" id="SZd-hE-a1P"/>
@@ -1127,7 +1071,22 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nhc-Z2-DwW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1883" y="2875"/>
+            <point key="canvasLocation" x="1882.5" y="2874.2957746478874"/>
+        </scene>
+        <!--Feedback View Controller-->
+        <scene sceneID="w8p-zf-Yof">
+            <objects>
+                <viewController storyboardIdentifier="FeedbackViewControllerID" id="3VW-kJ-yTy" customClass="FeedbackViewController" customModule="StressSensorApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="auF-am-Bvw">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="FVF-Gd-FQv"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sQb-Hc-8U0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2535" y="2874"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Qqn-Cp-DNE">

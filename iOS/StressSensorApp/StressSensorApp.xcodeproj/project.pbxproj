@@ -36,6 +36,9 @@
 		23A3105D2224A0D5004BC31A /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A3105C2224A0D5004BC31A /* Store.swift */; };
 		23A31061222A941F004BC31A /* MonitorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A31060222A941F004BC31A /* MonitorViewController.swift */; };
 		23A31063222AA5B9004BC31A /* TableBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A31062222AA5B9004BC31A /* TableBackground.swift */; };
+		23A31067222B3F17004BC31A /* FeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A31066222B3F17004BC31A /* FeedbackViewController.swift */; };
+		23A31069222BDDB8004BC31A /* MonitorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 23A31068222BDDB8004BC31A /* MonitorCell.xib */; };
+		23A3106D222BEC1E004BC31A /* MonitorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A3106C222BEC1E004BC31A /* MonitorCell.swift */; };
 		23A96D7120C6994100D32A02 /* Coach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A96D7020C6994100D32A02 /* Coach.swift */; };
 		23ADED482033BDD600E2A7F3 /* RevEmpaLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */; };
 		23ADED4A2035DCDA00E2A7F3 /* StressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23ADED492035DCDA00E2A7F3 /* StressModel.swift */; };
@@ -117,6 +120,9 @@
 		23A31060222A941F004BC31A /* MonitorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorViewController.swift; sourceTree = "<group>"; };
 		23A31062222AA5B9004BC31A /* TableBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableBackground.swift; sourceTree = "<group>"; };
 		23A31064222B20AE004BC31A /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = .gitignore; path = ../../../.gitignore; sourceTree = "<group>"; };
+		23A31066222B3F17004BC31A /* FeedbackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackViewController.swift; sourceTree = "<group>"; };
+		23A31068222BDDB8004BC31A /* MonitorCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MonitorCell.xib; sourceTree = "<group>"; };
+		23A3106C222BEC1E004BC31A /* MonitorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorCell.swift; sourceTree = "<group>"; };
 		23A96D7020C6994100D32A02 /* Coach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coach.swift; sourceTree = "<group>"; };
 		23ADED472033BDD600E2A7F3 /* RevEmpaLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevEmpaLink.swift; sourceTree = "<group>"; };
 		23ADED492035DCDA00E2A7F3 /* StressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressModel.swift; sourceTree = "<group>"; };
@@ -321,6 +327,8 @@
 				2398C36C220D8BA70000800D /* QuadrantView.swift */,
 				23A31059222495E8004BC31A /* DebugMenu.swift */,
 				23A31062222AA5B9004BC31A /* TableBackground.swift */,
+				23A31068222BDDB8004BC31A /* MonitorCell.xib */,
+				23A3106C222BEC1E004BC31A /* MonitorCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -344,6 +352,7 @@
 				23E18B04202DE2EF0034134E /* SettingsViewController.swift */,
 				2309F0B3204D6FF000EE651B /* AddSampleViewController.swift */,
 				2398C36E220DEE5B0000800D /* QuadrantViewController.swift */,
+				23A31066222B3F17004BC31A /* FeedbackViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -496,6 +505,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2314D03C20921C8B00A35C10 /* custom_test.json in Resources */,
+				23A31069222BDDB8004BC31A /* MonitorCell.xib in Resources */,
 				231F4CB61FCF5F5000AE6881 /* LaunchScreen.storyboard in Resources */,
 				2314D0392091F63800A35C10 /* GoogleService-Info.plist in Resources */,
 				231F4CB31FCF5F5000AE6881 /* Assets.xcassets in Resources */,
@@ -564,6 +574,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-StressSensorApp/Pods-StressSensorApp-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
+				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/ReSwift/ReSwift.framework",
@@ -574,6 +585,7 @@
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReSwift.framework",
@@ -625,11 +637,13 @@
 				2398C36F220DEE5B0000800D /* QuadrantViewController.swift in Sources */,
 				23ADED482033BDD600E2A7F3 /* RevEmpaLink.swift in Sources */,
 				23A96D7120C6994100D32A02 /* Coach.swift in Sources */,
+				23A3106D222BEC1E004BC31A /* MonitorCell.swift in Sources */,
 				23B5DA9E202CC92100D22352 /* LiveChart.swift in Sources */,
 				23681E22203787BD00F39507 /* Utilities.swift in Sources */,
 				23A3105D2224A0D5004BC31A /* Store.swift in Sources */,
 				23B5DAA4202CFFA000D22352 /* DeviceManager.swift in Sources */,
 				23B5DAA2202CFDBB00D22352 /* Signal.swift in Sources */,
+				23A31067222B3F17004BC31A /* FeedbackViewController.swift in Sources */,
 				2309F0B4204D6FF000EE651B /* AddSampleViewController.swift in Sources */,
 				2398C36D220D8BA70000800D /* QuadrantView.swift in Sources */,
 				23B5DAA0202CFD9200D22352 /* SignalAcquisition.swift in Sources */,
