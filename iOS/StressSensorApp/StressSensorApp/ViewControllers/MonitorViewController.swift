@@ -83,7 +83,7 @@ class MonitorViewController: UITableViewController {
             if mainStore.state.user.userInfo?.clearance == .dev {
                 error += "\n\nDetails:\n\(details)"
             }
-            presentGenericError(error)
+            presentGenericError(error, completion: alertCompletion)
             return nil
         } catch {
             presentGenericError(error.localizedDescription, completion: alertCompletion)

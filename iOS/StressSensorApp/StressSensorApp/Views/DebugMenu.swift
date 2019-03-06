@@ -52,6 +52,12 @@ struct DebugMenu {
             )
         ]
         actions.forEach { actionSheet.addAction($0) }
+
+        let view = controller.view!
+        actionSheet.popoverPresentationController?.sourceView = view
+        actionSheet.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection()
+        actionSheet.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+
         controller.present(actionSheet, animated: true, completion: nil)
     }
 }
