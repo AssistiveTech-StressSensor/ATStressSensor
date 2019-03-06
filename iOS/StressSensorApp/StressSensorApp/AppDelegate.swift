@@ -8,6 +8,7 @@
 
 import UIKit
 import UserNotifications
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -32,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         StressModel.main.setup()
         EnergyModel.main.setup()
         SignalAcquisition.setup()
-        ModelLogger.setup()
+        FirebaseApp.configure()
         AutoLogger.activate()
 
         let options: UNAuthorizationOptions  = [.alert, .badge, .sound]
@@ -40,6 +41,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().requestAuthorization(options: options) { success, _ in
             // ...
         }
+
+        window?.makeKeyAndVisible()
+        let vc = window?.rootViewController
+        AccountManager.shared.tryToLogin(on: vc!)
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {

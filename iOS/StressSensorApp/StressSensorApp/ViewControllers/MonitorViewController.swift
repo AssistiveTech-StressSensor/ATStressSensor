@@ -79,7 +79,11 @@ class MonitorViewController: UITableViewController {
         do {
             snapshot = try SignalAcquisition.generateSnapshot()
         } catch SignalAcquisitionError.snapshotGenerationFailed(let details) {
-            presentGenericError("Latest data from sensor is corrupted or insufficient. Please try again later.\n\nDetails:\n\(details)", completion: alertCompletion)
+            var error = "Not enough data from the sensor. Please keep the sensor connected and try again later."
+            if mainStore.state.user.userInfo?.clearance == .dev {
+                error += "\n\nDetails:\n\(details)"
+            }
+            presentGenericError(error)
             return nil
         } catch {
             presentGenericError(error.localizedDescription, completion: alertCompletion)

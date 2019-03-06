@@ -271,6 +271,7 @@ class EnergyModel {
         data = EnergyModelData()
         svr = EnergyModel.initSVR()
         UserDefaults().setValue(nil, forKey: latestTrainingDateKey)
+        _numberOfSamplesAhead = nil
     }
 
     /// Trains async. the model with the provided dataset

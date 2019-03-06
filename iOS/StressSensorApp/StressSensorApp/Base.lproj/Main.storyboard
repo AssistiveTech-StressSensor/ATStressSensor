@@ -659,32 +659,8 @@
                         <sections>
                             <tableViewSection headerTitle="Device" footerTitle="Make sure the sensor is on and active before connecting" id="ahR-Su-G9T">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="MUf-r2-lxe">
-                                        <rect key="frame" x="0.0" y="55.5" width="320" height="50"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="MUf-r2-lxe" id="84D-Rr-5Gc">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="49.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GpQ-rs-ra8">
-                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="49.5"/>
-                                                    <state key="normal" title="Find &amp; Connect"/>
-                                                    <connections>
-                                                        <action selector="connectDisconnectPressed:" destination="3yw-cf-X7b" eventType="touchUpInside" id="luq-7v-wrF"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="GpQ-rs-ra8" firstAttribute="leading" secondItem="84D-Rr-5Gc" secondAttribute="leading" id="G35-KX-yHE"/>
-                                                <constraint firstItem="GpQ-rs-ra8" firstAttribute="top" secondItem="84D-Rr-5Gc" secondAttribute="top" id="Im0-j0-mC7"/>
-                                                <constraint firstAttribute="trailing" secondItem="GpQ-rs-ra8" secondAttribute="trailing" id="Tq0-KG-aID"/>
-                                                <constraint firstAttribute="bottom" secondItem="GpQ-rs-ra8" secondAttribute="bottom" id="fNl-zz-ajW"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" textLabel="7IM-IT-AUs" detailTextLabel="1e7-t1-QIS" style="IBUITableViewCellStyleValue1" id="JAC-It-njC">
-                                        <rect key="frame" x="0.0" y="105.5" width="320" height="50"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="320" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JAC-It-njC" id="tXp-eT-P1J">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="49.5"/>
@@ -705,6 +681,30 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                        </tableViewCellContentView>
+                                        <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="MUf-r2-lxe">
+                                        <rect key="frame" x="0.0" y="105.5" width="320" height="50"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="MUf-r2-lxe" id="84D-Rr-5Gc">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="49.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GpQ-rs-ra8">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="49.5"/>
+                                                    <state key="normal" title="Find &amp; Connect"/>
+                                                    <connections>
+                                                        <action selector="connectDisconnectPressed:" destination="3yw-cf-X7b" eventType="touchUpInside" id="luq-7v-wrF"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="GpQ-rs-ra8" firstAttribute="leading" secondItem="84D-Rr-5Gc" secondAttribute="leading" id="G35-KX-yHE"/>
+                                                <constraint firstItem="GpQ-rs-ra8" firstAttribute="top" secondItem="84D-Rr-5Gc" secondAttribute="top" id="Im0-j0-mC7"/>
+                                                <constraint firstAttribute="trailing" secondItem="GpQ-rs-ra8" secondAttribute="trailing" id="Tq0-KG-aID"/>
+                                                <constraint firstAttribute="bottom" secondItem="GpQ-rs-ra8" secondAttribute="bottom" id="fNl-zz-ajW"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableViewCell>
@@ -744,15 +744,15 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="49.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Nickname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cXy-Wj-rHl">
-                                                    <rect key="frame" x="15" y="15" width="76.5" height="20.5"/>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cXy-Wj-rHl">
+                                                    <rect key="frame" x="15" y="15" width="45" height="20.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Tap to add" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" id="eHU-PB-rnd">
-                                                    <rect key="frame" x="223" y="15" width="81" height="20.5"/>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="-" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" id="eHU-PB-rnd">
+                                                    <rect key="frame" x="296" y="15" width="8" height="20.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -787,28 +787,27 @@
                                         </tableViewCellContentView>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" textLabel="krC-5x-J3s" detailTextLabel="p7g-AJ-jqa" style="IBUITableViewCellStyleValue1" id="a8X-R4-oZP">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="BYa-X0-e3t">
                                         <rect key="frame" x="0.0" y="389.5" width="320" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="a8X-R4-oZP" id="ljO-9P-miS">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="BYa-X0-e3t" id="QYg-3s-5k9">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="49.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Logged entries (S|E)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="krC-5x-J3s">
-                                                    <rect key="frame" x="15" y="15" width="157" height="20.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="-" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" id="p7g-AJ-jqa">
-                                                    <rect key="frame" x="296" y="15" width="8" height="20.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7w7-Kw-akZ">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="49.5"/>
+                                                    <state key="normal" title="Manage Account"/>
+                                                    <connections>
+                                                        <action selector="manageAccountPressed:" destination="3yw-cf-X7b" eventType="touchUpInside" id="Nnf-jy-7ZC"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="7w7-Kw-akZ" secondAttribute="trailing" id="0R1-Ga-hef"/>
+                                                <constraint firstItem="7w7-Kw-akZ" firstAttribute="top" secondItem="QYg-3s-5k9" secondAttribute="top" id="AUc-BV-bhQ"/>
+                                                <constraint firstItem="7w7-Kw-akZ" firstAttribute="leading" secondItem="QYg-3s-5k9" secondAttribute="leading" id="Wvd-jf-Rxq"/>
+                                                <constraint firstAttribute="bottom" secondItem="7w7-Kw-akZ" secondAttribute="bottom" id="hxV-an-VTc"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableViewCell>
@@ -879,9 +878,9 @@
                         <outlet property="authenticatedLabel" destination="fuJ-pK-baR" id="oP5-qS-PdP"/>
                         <outlet property="batteryLevelLabel" destination="1e7-t1-QIS" id="ahG-RG-2Jg"/>
                         <outlet property="connectDisconnectButton" destination="GpQ-rs-ra8" id="r2G-fd-9jo"/>
-                        <outlet property="loggerEntriesLabel" destination="p7g-AJ-jqa" id="abh-VU-kF0"/>
                         <outlet property="loggerLabel" destination="CM1-tv-2bh" id="CZY-kR-yCt"/>
-                        <outlet property="loggerNicknameLabel" destination="eHU-PB-rnd" id="Xra-ZX-prq"/>
+                        <outlet property="loggerNameLabel" destination="eHU-PB-rnd" id="czw-56-4fE"/>
+                        <outlet property="manageAccountButton" destination="7w7-Kw-akZ" id="Jgg-RE-bjQ"/>
                         <outlet property="userIdentifierLabel" destination="fMR-wi-Jeq" id="qgM-HA-CUX"/>
                     </connections>
                 </tableViewController>

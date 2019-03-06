@@ -14,8 +14,8 @@ class SettingsViewController: UITableViewController, StoreSubscriber {
     @IBOutlet weak var batteryLevelLabel: UILabel!
     @IBOutlet weak var userIdentifierLabel: UILabel!
     @IBOutlet weak var loggerLabel: UILabel!
-    @IBOutlet weak var loggerNicknameLabel: UILabel!
-    @IBOutlet weak var loggerEntriesLabel: UILabel!
+    @IBOutlet weak var loggerNameLabel: UILabel!
+    @IBOutlet weak var manageAccountButton: UIButton!
     @IBOutlet weak var connectDisconnectButton: UIButton!
     @IBOutlet weak var authenticatedLabel: UILabel!
     @IBOutlet weak var authenticateButton: UIButton!
@@ -28,17 +28,9 @@ class SettingsViewController: UITableViewController, StoreSubscriber {
         return mainStore.state.device.authenticated
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        let tapGR = UITapGestureRecognizer(target: self, action: #selector(changeLoggerNickname))
-        loggerNicknameLabel.superview?.addGestureRecognizer(tapGR)
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         mainStore.subscribe(self)
-        updateNickname()
-        updateLoggedEntries()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -82,13 +74,14 @@ class SettingsViewController: UITableViewController, StoreSubscriber {
         userIdentifierLabel.text = state.user.userID ?? "-"
         loggerLabel.text = ModelLogger.canLog ? "YES" : "NO"
         authenticatedLabel.text = isAuthenticatedWithEmpatica ? "YES" : "NO"
-    }
+        loggerNameLabel.text = state.user.userInfo?.fullName ?? "-"
 
-    func updateLoggedEntries() {
-        ModelLogger.getCurrentLoggedEntries { [weak self] (stressCount, energyCount) in
-            DispatchQueue.main.async {
-                self?.loggerEntriesLabel.text = "\(stressCount)|\(energyCount)"
-            }
+        if state.user.userInfo == nil {
+            manageAccountButton.setTitle("Login / Register", for: .init(rawValue: 0))
+            manageAccountButton.tintColor = UIButton.appearance().tintColor
+        } else {
+            manageAccountButton.setTitle("Logout", for: .init(rawValue: 0))
+            manageAccountButton.tintColor = .red
         }
     }
 
@@ -114,58 +107,8 @@ class SettingsViewController: UITableViewController, StoreSubscriber {
         DeviceManager.main.disconnect()
     }
 
-    func updateNickname() {
-
-        ModelLogger.getNickname { [weak self] nickname in
-
-            DispatchQueue.main.async {
-                if nickname == nil {
-                    self?.loggerNicknameLabel.text = "Tap to add"
-                } else {
-                    self?.loggerNicknameLabel.text = nickname
-                }
-            }
-        }
-    }
-
-    func performNicknameChange(_ newNickname: String) {
-
-        let alert = UIAlertController(title: "Saving...", message: nil, preferredStyle: .alert)
-        present(alert, animated: true, completion: nil)
-
-        ModelLogger.modifyNickname(newNickname) { [weak self] result in
-            Thread.sleep(forTimeInterval: 1.0)
-            DispatchQueue.main.async {
-                alert.dismiss(animated: true, completion: nil)
-                self?.updateNickname()
-            }
-        }
-    }
-
-    @objc
-    func changeLoggerNickname() {
-
-        let alert = UIAlertController(
-            title: "Modify nickname:",
-            message: nil,
-            preferredStyle: .alert
-        )
-
-        alert.addTextField { (textField) in
-            textField.placeholder = "New nickname"
-        }
-
-        let confirmAction = UIAlertAction(title: "Change", style: .destructive) { [weak self] _ in
-            let textField = alert.textFields![0] as UITextField
-            if let newNickname = textField.text, !newNickname.isEmpty {
-                self?.performNicknameChange(newNickname)
-            }
-        }
-
-        alert.addAction(confirmAction)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-
-        present(alert, animated: true, completion: nil)
+    @IBAction func manageAccountPressed(_ sender: Any) {
+        AccountManager.shared.presentManageAccountAlert(on: self)
     }
 
     @IBAction func connectDisconnectPressed(_ sender: Any) {

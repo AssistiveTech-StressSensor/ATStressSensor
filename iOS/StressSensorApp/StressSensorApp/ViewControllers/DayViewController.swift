@@ -41,7 +41,7 @@ class DayViewController: UIViewController, StoreSubscriber {
 
     func newState(state: AppState) {
 
-        if state.user.userClearance == .dev {
+        if state.user.userInfo?.clearance == .dev {
             navigationItem.rightBarButtonItem = devMenuButton
         } else {
             navigationItem.rightBarButtonItem = nil

@@ -42,7 +42,11 @@ class TrainViewController: UIViewController {
         do {
             snapshot = try SignalAcquisition.generateSnapshot()
         } catch SignalAcquisitionError.snapshotGenerationFailed(let details) {
-            presentGenericError("Latest data from sensor is corrupted or insufficient. Please try again later.\n\nDetails:\n\(details)")
+            var error = "Not enough data from the sensor. Please keep the sensor connected and try again later."
+            if mainStore.state.user.userInfo?.clearance == .dev {
+                error += "\n\nDetails:\n\(details)"
+            }
+            presentGenericError(error)
             return nil
         } catch {
             presentGenericError(error.localizedDescription)
@@ -86,24 +90,9 @@ class TrainViewController: UIViewController {
     }
 
     @IBAction func clearPressed() {
-
-        func confirm(_ action: UIAlertAction) {
-            StressModel.main.clear()
-            EnergyModel.main.clear()
-            QuadrantModel.main.clear()
-            updateStatusLabel()
+        AccountManager.shared.presentDataDeletionAlert(on: self) { [weak self] confirmed in
+            if confirmed { self?.updateStatusLabel() }
         }
-
-        let alert = UIAlertController(
-            title: "Are you sure?",
-            message: "You're about to delete all collected data. New stress predictions will require training a new model.",
-            preferredStyle: .alert
-        )
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: confirm))
-
-        present(alert, animated: true, completion: nil)
     }
 
     func tryToTrain() {

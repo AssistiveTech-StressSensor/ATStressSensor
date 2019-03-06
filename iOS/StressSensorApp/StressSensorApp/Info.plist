@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>18</string>
+	<string>20</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -38,6 +38,8 @@
 	<string>Required by ResearchKit</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Required by Firebase SDK</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Required by ResearchKit</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>

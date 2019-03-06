@@ -325,6 +325,7 @@ class StressModel {
         data = StressModelData()
         svm = SVM()
         UserDefaults().setValue(nil, forKey: latestTrainingDateKey)
+        _numberOfSamplesAhead = nil
     }
 
     /// Trains async. the model with the provided dataset

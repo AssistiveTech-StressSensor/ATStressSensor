@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PromiseKit
 
 func CFUnixTimeGetCurrent() -> CFTimeInterval {
     return CFAbsoluteTimeGetCurrent() + 978307200.0
@@ -98,7 +99,32 @@ extension Decodable {
 
 }
 
+protocol Storable where Self: Codable {
+    associatedtype codableType: Codable = Self
+    static var storableKey: String { get }
+}
+
+extension Storable {
+    static func load() -> codableType? {
+        assert(Thread.isMainThread)
+        guard let json = UserDefaults().value(forKey: storableKey) as? String else { return nil }
+        return codableType.fromJSON(json)
+    }
+
+    @discardableResult
+    func save() -> Bool {
+        assert(Thread.isMainThread)
+        guard let json = (self as? codableType)?.asJSON() else { return false }
+        UserDefaults().set(json, forKey: Self.storableKey)
+        return true
+    }
+}
+
 extension UIViewController {
+
+    func dismiss() -> Guarantee<Void> {
+        return Guarantee { dismiss(animated: true, completion: $0) }
+    }
 
     func presentGenericError(_ message: String, dismissHandler: ((UIAlertAction) -> ())? = nil, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(

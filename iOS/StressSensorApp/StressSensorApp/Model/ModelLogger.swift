@@ -6,9 +6,6 @@
 //  Copyright © 2018 AssistiveTech KTH. All rights reserved.
 //
 
-import UIKit
-import Firebase
-import FirebaseAuth
 import FirebaseDatabase
 
 
@@ -19,15 +16,9 @@ private protocol LoggerEntry: Encodable {
     var timestamp: TimeInterval { get }
 }
 
-enum UserClearance: String {
-    case dev
-    case user
-}
-
 
 class ModelLogger {
 
-    private static let userIDKey = "firebase.userID"
     static var enabled: Bool = true
 
     static var userID: String? {
@@ -35,15 +26,20 @@ class ModelLogger {
     }
 
     static var userClearance: UserClearance {
-        return mainStore.state.user.userClearance
+        return mainStore.state.user.userInfo?.clearance ?? .user
     }
 
     static var canLog: Bool {
-        return enabled && userID != nil
+        return enabled && userID != nil && Firebase.isSignedIn
+    }
+
+    private static var dataReference: DatabaseReference? {
+        guard let userID = userID else { return nil }
+        return Firebase.collectedData(forUser: userID)
     }
 
     private struct StressEntry: LoggerEntry {
-        static let databaseLabel = "data"
+        static let databaseLabel = "stress_data"
         let snapshot: SignalsSnapshot
         let userID: String
         let timestamp: TimeInterval
@@ -120,117 +116,6 @@ class ModelLogger {
         }
     }
 
-    static func setup() {
-
-        if Secret.isValid {
-
-            FirebaseApp.configure()
-
-            Auth.auth().signIn(
-                withEmail: Constants.Firebase.dummyEmail,
-                password: Constants.Firebase.dummyPassword,
-                completion: { user, error in
-
-                    if let error = error {
-                        print("Firebase auth: failure (\(error.localizedDescription))")
-                    } else {
-                        print("Firebase auth: success")
-                        ModelLogger.createUserIfNeeded() { _ in
-                            ModelLogger.getUserClearance()
-                        }
-                    }
-                }
-            )
-
-        } else {
-            print("Firebase auth: skipped (credentials not found)")
-        }
-    }
-
-    static func getUserClearance() {
-        guard let userID = userID else { return }
-        let ref = Database.database().reference(withPath: "users/\(userID)/clearance")
-        ref.observeSingleEvent(of: .value, with: { s in
-            var clearance: UserClearance? = nil
-            if let value = s.value as? String {
-                clearance = UserClearance(rawValue: value)
-            }
-            mainStore.safeDispatch(Actions.ChangeUserClearance(userClearance: clearance ?? .user))
-        })
-    }
-
-    static func getNickname(_ completion: @escaping (String?) -> Void) {
-
-        guard let userID = userID else {
-            return completion(nil)
-        }
-
-        let ref = Database.database().reference(withPath: "users/\(userID)/first_name")
-        ref.observeSingleEvent(of: .value, with: { s in
-            completion(s.value as? String)
-        })
-    }
-
-    static func modifyNickname(_ newNickname: String, completion: @escaping (Bool) -> Void) {
-
-        guard let userID = userID else {
-            return completion(false)
-        }
-
-        let userRef = Database.database().reference(withPath: "users/\(userID)")
-        userRef.updateChildValues(["first_name": newNickname]) { error, ref in
-            completion(error == nil)
-        }
-    }
-
-    static func getCurrentLoggedEntries(_ completion: @escaping (Int, Int) -> Void) {
-
-        guard let userID = userID else {
-            return completion(-1, -1)
-        }
-
-        let stressDataRef = Database.database().reference(withPath: "users/\(userID)/data")
-        let energyDataRef = Database.database().reference(withPath: "users/\(userID)/energy_data")
-
-        stressDataRef.observeSingleEvent(of: .value, with: { stressData in
-            energyDataRef.observeSingleEvent(of: .value, with: { energyData in
-                let stressDataCount = Int(stressData.childrenCount)
-                let energyDataCount = Int(energyData.childrenCount)
-                completion(stressDataCount, energyDataCount)
-            })
-        })
-    }
-
-    static func createUserIfNeeded(force: Bool = false, completion: @escaping (Bool) -> Void) {
-
-        guard userID == nil else { return completion(false) }
-        let existingUserID = UserDefaults().value(forKey: userIDKey) as? String
-
-        if !force && existingUserID != nil {
-            mainStore.safeDispatch(Actions.ChangeUserID(userID: existingUserID))
-            completion(true)
-        } else {
-
-            let usersRef = Database.database().reference(withPath: "users")
-            let userRef = usersRef.childByAutoId()
-            let userID = userRef.key
-
-            usersRef.updateChildValues(["/\(userID)": [
-                "first_name": "-",
-                "clearance": UserClearance.user.rawValue
-            ]]) { error, ref in
-
-                if error == nil {
-                    UserDefaults().set(userID, forKey: userIDKey)
-                    mainStore.safeDispatch(Actions.ChangeUserID(userID: userID))
-                    completion(true)
-                } else {
-                    completion(false)
-                }
-            }
-        }
-    }
-
     static func logStress(snapshot: SignalsSnapshot, sample: ModelSample, stressLevel: StressLevel,
                     sleepQuality: SleepQuality? = nil, foodIntake: FoodIntake? = nil, additionalNotes: String? = nil) {
         guard let userID = userID else { return }
@@ -279,10 +164,9 @@ class ModelLogger {
     }
 
     static func logPrediction(_ prediction: Prediction, snapshot: SignalsSnapshot? = nil) {
-        guard let userID = userID else { return }
-        guard canLog else { return }
-        let userRef = Database.database().reference(withPath: "users/\(userID)")
-        let dataSampleRef = userRef.child("predictions").child(prediction.identifier)
+        guard canLog, let dataReference = dataReference else { return }
+
+        let predictionRef = dataReference.child("predictions").child(prediction.identifier)
 
         var updates: [String: Any] = [
             "prediction": prediction.asDictionary()!
@@ -292,15 +176,14 @@ class ModelLogger {
             updates["snapshot_json"] = snapshot.asJSON()!
         }
 
-        dataSampleRef.updateChildValues(updates)
+        predictionRef.updateChildValues(updates)
     }
 
     private static func logEntry(_ entry: LoggerEntry) {
-        guard canLog else { return }
+        guard canLog, let dataReference = dataReference else { return }
         let dbLabel = type(of: entry).databaseLabel
-        let userRef = Database.database().reference(withPath: "users/\(entry.userID)")
-        let dataSampleRef = userRef.child(dbLabel).childByAutoId()
-        dataSampleRef.updateChildValues([
+        let entryRef = dataReference.child(dbLabel).childByAutoId()
+        entryRef.updateChildValues([
             "js_data": entry.asJSON()!,
             "timestamp": entry.timestamp
         ])

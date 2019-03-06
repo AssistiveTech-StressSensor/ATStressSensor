@@ -8,6 +8,7 @@
 
 import Foundation
 import ReSwift
+import PromiseKit
 
 
 struct DeviceState: StateType {
@@ -16,9 +17,15 @@ struct DeviceState: StateType {
     var batteryLevel: Float?
 }
 
-struct UserState: StateType {
+struct UserState: StateType, Codable, Storable {
+    static let storableKey: String = "mainStore.state.user"
+
     var userID: String? = nil
-    var userClearance: UserClearance = .user
+    var userInfo: UserInfo? = nil
+
+    static func tryToLoad() -> UserState {
+        return load() ?? UserState()
+    }
 }
 
 struct DebugOptionsState: StateType {
@@ -29,7 +36,7 @@ struct DebugOptionsState: StateType {
 }
 
 struct AppState: StateType {
-    var user = UserState()
+    var user = UserState.tryToLoad()
     var device = DeviceState()
     var debug = DebugOptionsState()
 }
@@ -40,8 +47,9 @@ protocol DebugAction: Action {}
 protocol DeviceAction: Action {}
 
 struct Actions {
-    struct ChangeUserID: UserAction { let userID: String? }
-    struct ChangeUserClearance: UserAction { let userClearance: UserClearance }
+    struct UpdateUserID: UserAction { let userID: String }
+    struct UpdateUserInfo: UserAction { let userInfo: UserInfo }
+    struct ClearUserState: UserAction {}
     struct DisableCooldown: DebugAction { let value: Bool }
     struct UseFakeSnapshots: DebugAction { let value: Bool }
     struct AddNoiseToSignals: DebugAction { let value: Bool }
@@ -97,17 +105,20 @@ private func debugOptionsReducer(action: DebugAction, state: DebugOptionsState?)
 
 
 private func userReducer(action: UserAction, state: UserState?) -> UserState {
-    var state = state ?? UserState()
+    var state = state ?? UserState.tryToLoad()
 
     switch action {
-    case let action as Actions.ChangeUserID:
+    case let action as Actions.UpdateUserID:
         state.userID = action.userID
-    case let action as Actions.ChangeUserClearance:
-        state.userClearance = action.userClearance
+    case let action as Actions.UpdateUserInfo:
+        state.userInfo = action.userInfo
+    case _ as Actions.ClearUserState:
+        state = UserState()
     default:
         break
     }
 
+    state.save()
     return state
 }
 
@@ -135,11 +146,16 @@ let mainStore = Store<AppState>(
 
 
 extension Store {
-    func safeDispatch(_ action: Action) {
-        if Thread.isMainThread {
-            self.dispatch(action)
-        } else {
-            DispatchQueue.main.sync { self.dispatch(action) }
+
+    @discardableResult
+    func safeDispatch(_ action: Action) -> Guarantee<Void> {
+        return Guarantee { seal in
+            if Thread.isMainThread {
+                self.dispatch(action)
+            } else {
+                DispatchQueue.main.sync { self.dispatch(action) }
+            }
+            seal(())
         }
     }
 }
