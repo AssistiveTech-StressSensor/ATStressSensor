@@ -8,13 +8,24 @@
 
 import UIKit
 
+class QuadrantTableView: UITableView {
+    override func touchesShouldCancel(in view: UIView) -> Bool {
+        let original = super.touchesShouldCancel(in: view)
+        if view is QuadrantView {
+            return false
+        }
+        return original
+    }
+}
+
 class QuadrantViewController: UITableViewController {
 
     private static let identifier = "QuadrantViewControllerID"
     static let navIdentifier = "QuadrantViewControllerNavID"
 
-    @IBOutlet weak var addButton: UIBarButtonItem!
+    @IBOutlet weak var addButton: UIButton!
     @IBOutlet weak var quadrantView: QuadrantView!
+    @IBOutlet weak var additionalNotesView: UITextView!
 
     private var snapshot: SignalsSnapshot!
     private var completionHandler: ((Bool) -> ())?
@@ -37,9 +48,10 @@ class QuadrantViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let labels = ["Success", "Inner Peace", "Depression", "Anxiety"]
+        let labels = ["Productivity", "Inner Peace", "Depression", "Anxiety"]
         quadrantView.setTextLabels(labels)
         quadrantView.valueChangeHandler = quadrantValueChanged
+        addButton.isEnabled = false
     }
 
     func quadrantValueChanged(_ newValue: QuadrantValue) {
@@ -51,12 +63,14 @@ class QuadrantViewController: UITableViewController {
         // Add sample to model
         let value = quadrantView!.value
         let sample = QuadrantModel.main.addSample(snapshot: snapshot, for: value)
+        let additionalNotes = additionalNotesView.text
 
         // Log data to remote server
         ModelLogger.logQuadrant(
             snapshot: snapshot,
             sample: sample,
-            value: value
+            value: value,
+            notes: additionalNotes
         )
 
         let alert = UIAlertController(

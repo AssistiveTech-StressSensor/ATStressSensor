@@ -92,6 +92,7 @@ class ModelLogger {
 
         let sample: ModelSample
         let label: QuadrantValue
+        let notes: String?
 
         enum CodingKeys: String, CodingKey {
             case snapshot
@@ -100,6 +101,7 @@ class ModelLogger {
 
             case sample
             case label
+            case notes
         }
     }
 
@@ -143,14 +145,15 @@ class ModelLogger {
         ))
     }
 
-    static func logQuadrant(snapshot: SignalsSnapshot, sample: ModelSample, value: QuadrantValue) {
+    static func logQuadrant(snapshot: SignalsSnapshot, sample: ModelSample, value: QuadrantValue, notes: String?) {
         guard let userID = userID else { return }
         logEntry(QuadrantEntry(
             snapshot: snapshot,
             userID: userID,
             timestamp: Date().timeIntervalSince1970,
             sample: sample,
-            label: value
+            label: value,
+            notes: notes
         ))
     }
 

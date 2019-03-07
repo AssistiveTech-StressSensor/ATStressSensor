@@ -74,6 +74,7 @@ struct Questionnaire: Codable {
         let appliedFactor: Double
         let questionnaireName: String
         let questionnaireVersion: String
+        let notes: String?
 
         enum CodingKeys: String, CodingKey {
             case score
@@ -81,6 +82,7 @@ struct Questionnaire: Codable {
             case appliedFactor = "applied_factor"
             case questionnaireName = "questionnaire_name"
             case questionnaireVersion = "questionnaire_version"
+            case notes
         }
     }
 
@@ -186,6 +188,10 @@ extension Questionnaire {
 
         let answers = extractAnswers(result)
 
+        let notesStepRes = (result as! ORKTaskResult).stepResult(forStepIdentifier: "notesStep")
+        let notesResult = notesStepRes?.result(forIdentifier: "notes") as? ORKTextQuestionResult
+        let notes = notesResult?.textAnswer
+
         let partialScore: Score = {
             switch scoring {
             case .sum:
@@ -202,7 +208,8 @@ extension Questionnaire {
             answers: answers,
             appliedFactor: factor,
             questionnaireName: self.name,
-            questionnaireVersion: self.version
+            questionnaireVersion: self.version,
+            notes: notes
         )
     }
 
@@ -252,6 +259,18 @@ extension Questionnaire {
         for (id, question) in selectedQuestions {
             formSteps.append(question.asFormStep(id: id))
         }
+
+        let notesStep = ORKFormStep(identifier: "notesStep")
+        notesStep.isOptional = true
+        notesStep.formItems = [
+            ORKFormItem(
+                identifier: "notes",
+                text: "Notes (optional)",
+                answerFormat: ORKTextAnswerFormat(maximumLength: 0),
+                optional: true
+            )
+        ]
+        formSteps.append(notesStep)
 
         return ORKOrderedTask(identifier: "task", steps: formSteps)
     }
