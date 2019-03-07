@@ -26,6 +26,11 @@ class LoginViewController: ORKLoginStepViewController {
 
 class AccountManager: NSObject {
 
+    fileprivate let registrationStepID = "registrationStep"
+    fileprivate let loginStepID = "loginStep"
+    fileprivate let consentStepID = "visualConsentStep"
+    fileprivate let consentReviewStepID = "consentReviewStep"
+
     fileprivate var registrationTask: ORKOrderedTask?
     fileprivate var verificationTask: ORKOrderedTask?
     fileprivate var loginTask: ORKOrderedTask?
@@ -43,21 +48,22 @@ class AccountManager: NSObject {
 
     func presentRegistrationForm(on viewController: UIViewController) {
 
+        let (consentStep, consentReviewStep) = ConsentManager.generateConsentStep(consentStepID: consentStepID, reviewStepID: consentReviewStepID)
         let registrationStep = ORKRegistrationStep(
-            identifier: "registrationStep",
+            identifier: registrationStepID,
             title: "Account Registration",
             text: "Please register at this point.",
             options: [.includeDOB, .includeGivenName, .includeFamilyName, .includeGender]
         )
 
-        registrationTask = ORKOrderedTask(identifier: "registrationTask", steps: [registrationStep])
+        registrationTask = ORKOrderedTask(identifier: "registrationTask", steps: [consentStep, consentReviewStep, registrationStep])
         present(task: registrationTask!, on: viewController)
     }
 
     func presentLoginForm(on viewController: UIViewController) {
 
         let loginStep = ORKLoginStep(
-            identifier: "loginStep",
+            identifier: loginStepID,
             title: "Login",
             text: "Please login with your credentials.",
             loginViewControllerClass: LoginViewController.self
@@ -264,21 +270,33 @@ extension AccountManager: ORKTaskViewControllerDelegate {
         }
     }
 
+    func taskViewController(_ taskViewController: ORKTaskViewController, shouldPresent step: ORKStep) -> Bool {
+        let allResults = taskViewController.result
+        if let consentReviewResult = allResults.stepResult(forStepIdentifier: consentReviewStepID) {
+            let signature = consentReviewResult.results?.first as? ORKConsentSignatureResult
+            if signature?.consented == false, step.identifier == registrationStepID {
+                let alert = UIAlertController(title: "Oops!", message: "You cannot register a new account without agreeing to the terms.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+                taskViewController.present(alert, animated: true, completion: nil)
+                return false
+            }
+        }
+        return true
+    }
+
     func taskViewController(_ taskViewController: ORKTaskViewController, didFinishWith reason: ORKTaskViewControllerFinishReason, error: Error?) {
         guard let taskID = taskViewController.task?.identifier else { return }
 
         if taskID == registrationTask?.identifier {
             if reason == .completed {
-                let stepID = registrationTask?.steps.first?.identifier
-                let stepResult = taskViewController.result.stepResult(forStepIdentifier: stepID!)!
+                let stepResult = taskViewController.result.stepResult(forStepIdentifier: registrationStepID)!
                 tryToRegister(with: RegistrationFormResult(stepResult)!, vc: taskViewController)
             } else {
                 taskViewController.dismiss(animated: true, completion: nil)
             }
         } else if taskID == loginTask?.identifier {
             if reason == .completed {
-                let stepID = loginTask?.steps.first?.identifier
-                let stepResult = taskViewController.result.stepResult(forStepIdentifier: stepID!)!
+                let stepResult = taskViewController.result.stepResult(forStepIdentifier: loginStepID)!
                 tryToLogin(on: taskViewController, formResult: LoginFormResult(stepResult)!)
             } else {
                 taskViewController.dismiss(animated: true, completion: nil)
