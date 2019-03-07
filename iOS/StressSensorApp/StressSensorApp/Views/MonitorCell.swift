@@ -46,8 +46,8 @@ class MonitorCell: Cell<String>, CellType {
         stressLabel.text = "Stress level: \(stress)"
 
         var energy = "Unknown"
-        if let phEnergy = prediction.physicalEnergy?.percentage, 0.0 <= phEnergy, phEnergy <= 100.0 {
-            energy = "\(round(phEnergy))%"
+        if let phEnergy = prediction.physicalEnergy?.percentage {
+            energy = "\(round(max(min(phEnergy, 100.0), 0.0)))%"
         }
         energyLabel.text = "Energy level: \(energy)"
 
