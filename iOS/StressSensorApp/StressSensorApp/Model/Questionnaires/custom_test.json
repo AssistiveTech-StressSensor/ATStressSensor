@@ -368,7 +368,7 @@
 					"text": "How is your ability in remembering things lately?",
 					"options": [
 						{
-							"text": "I remember everything",
+							"text": "I can remember properly",
 							"value": 1.0
 						},
 						{
@@ -440,10 +440,10 @@
 					],
 				},
 				{
-					"text": "Do you forget things more often than before?",
+					"text": "Do you forget things more often than usual lately?",
 					"options": [
 						{
-							"text": "No, I do not forget things",
+							"text": "Not at all",
 							"value": 1.0
 						},
 						{
@@ -465,7 +465,7 @@
 					],
 				},
 				{
-					"text": "Are you mentally tired?",
+					"text": "Are you mentally tired at the moment?",
 					"options": [
 						{
 							"text": "No, my head is at 100%",
@@ -484,16 +484,16 @@
 							"value": 4.0
 						},
 						{
-							"text": "Yes, I am completely tired",
+							"text": "Yes, I am extremely tired",
 							"value": 5.0
 						},
 					],
 				},
 				{
-					"text": "Do you feel like you are able to solve your tasks?",
+					"text": "Do you feel like you are able to solve your tasks at the moment?",
 					"options": [
 						{
-							"text": "Yes, I can solve all my tasks",
+							"text": "Yes, I feel productive",
 							"value": 1.0
 						},
 						{
@@ -501,7 +501,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "Maybe, I could solve some of my tasks",
+							"text": "Partially",
 							"value": 3.0
 						},
 						{
@@ -515,7 +515,7 @@
 					],
 				},
 				{
-					"text": "Do you feel capable to interact with other people?",
+					"text": "Do you feel capable of interacting with others right now?",
 					"options": [
 						{
 							"text": "Yes, social activities are not a challenge right now",
@@ -540,7 +540,7 @@
 					],
 				},
 				{
-					"text": "Does it require more energy to think than usual?",
+					"text": "Is thinking more energy-consuming than usual?",
 					"options": [
 						{
 							"text": "No, nothing requires more energy than usual",
@@ -551,7 +551,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "Some things require more thinking than usually",
+							"text": "Partially",
 							"value": 3.0
 						},
 						{
@@ -565,7 +565,7 @@
 					],
 				},
 				{
-					"text": "Do you feel slow in thought?",
+					"text": "Do you feel slow in thought at the moment?",
 					"options": [
 						{
 							"text": "No, my thoughts are fresh",
@@ -576,7 +576,7 @@
 							"value": 2.0
 						},
 						{
-							"text": "Maybe, some thoughts come slower than usually",
+							"text": "Some thoughts come slower than usually",
 							"value": 3.0
 						},
 						{
@@ -590,10 +590,10 @@
 					],
 				},
 				{
-					"text": "Are tasks taking more time than usual to solve?",
+					"text": "Are tasks taking more time than usual to solve lately?",
 					"options": [
 						{
-							"text": "No, all taks require its normal time",
+							"text": "No, all taks require normal time",
 							"value": 1.0
 						},
 						{
@@ -615,7 +615,7 @@
 					],
 				},
 				{
-					"text": "Does your mind recover quickly from effort?",
+					"text": "Does your mind recover quickly from effort lately?",
 					"options": [
 						{
 							"text": "Yes, my mind is fresh sortly after efforts",
