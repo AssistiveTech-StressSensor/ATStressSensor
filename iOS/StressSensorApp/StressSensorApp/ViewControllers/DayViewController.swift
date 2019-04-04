@@ -13,19 +13,25 @@ class DayViewController: UIViewController, StoreSubscriber {
 
     @IBOutlet var devMenuButton: UIBarButtonItem!
 
-    @IBOutlet weak var chartGSR: LiveChart!
-    @IBOutlet weak var chartBVP: LiveChart!
-    @IBOutlet weak var chartTemp: LiveChart!
-    @IBOutlet weak var chartIBI: LiveChart!
-    @IBOutlet weak var chartHR: LiveChart!
+    @IBOutlet weak var chart0: LiveChart!
+    @IBOutlet weak var chart1: LiveChart!
+    @IBOutlet weak var chart2: LiveChart!
+    @IBOutlet weak var chart3: LiveChart!
+    // @IBOutlet weak var chart4: LiveChart!
 
-    private var charts: [LiveChart]!
+    private var charts: [Signal: LiveChart]!
     private var pollingTimer: DispatchSourceTimer?
     var consentManager: ConsentManager?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        charts = [chartGSR, chartBVP, chartTemp, chartIBI, chartHR]
+        charts = [
+            .gsr: chart0,
+            .bvp: chart1,
+            .heartRate: chart2,
+            .temperature: chart3,
+            // .ibi: chart4,
+        ]
         setChartsAppearance()
     }
 
@@ -61,36 +67,36 @@ class DayViewController: UIViewController, StoreSubscriber {
 
     func setChartsAppearance() {
 
-        charts.forEach {
+        charts.values.forEach {
             $0.maxDataPoints = 300
             $0.outOfRangeGuard = true
         }
 
-        chartGSR.signalLabel = "GSR (μS)"
-        chartGSR.lineColor = .magenta
-        chartGSR.setRangeY(min: 0.0, max: 10.0)
+        charts[.gsr]?.signalLabel = "Perspiration - GSR (μS)"
+        charts[.gsr]?.lineColor = .magenta
+        charts[.gsr]?.setRangeY(min: 0.0, max: 10.0)
 
-        chartBVP.signalLabel = "BVP (mV)"
-        chartBVP.lineColor = .blue
-        chartBVP.setRangeY(min: -150.0, max: 150.0)
+        charts[.bvp]?.signalLabel = "Blood Pulse - BVP (mV)"
+        charts[.bvp]?.lineColor = .blue
+        charts[.bvp]?.setRangeY(min: -150.0, max: 150.0)
 
-        chartTemp.signalLabel = "Temperature (°C)"
-        chartTemp.lineColor = .green
-        chartTemp.setRangeY(min: 20.0, max: 42.0)
+        charts[.temperature]?.signalLabel = "Skin Temperature (°C)"
+        charts[.temperature]?.lineColor = .green
+        charts[.temperature]?.setRangeY(min: 20.0, max: 42.0)
 
-        chartIBI.signalLabel = "IBI (s)"
-        chartIBI.lineColor = .orange
-        chartIBI.setRangeY(min: 0.0, max: 3.0)
+        charts[.ibi]?.signalLabel = "IBI (s)"
+        charts[.ibi]?.lineColor = .orange
+        charts[.ibi]?.setRangeY(min: 0.0, max: 3.0)
 
-        chartHR.signalLabel = "Heart Rate (bpm)"
-        chartHR.lineColor = .red
-        chartHR.setRangeY(min: 0.0, max: 180.0)
+        charts[.heartRate]?.signalLabel = "Heart Rate (bpm)"
+        charts[.heartRate]?.lineColor = .red
+        charts[.heartRate]?.setRangeY(min: 0.0, max: 180.0)
     }
 
     func startPolling() {
         if pollingTimer?.isActive == true { return }
 
-        charts.forEach { $0.clear() }
+        charts.values.forEach { $0.clear() }
         setChartsAppearance()
         let step: TimeInterval = 1.0/24.0
         let timestampBeg = CFAbsoluteTimeGetCurrent()
@@ -102,20 +108,10 @@ class DayViewController: UIViewController, StoreSubscriber {
             let timestampCurr = CFAbsoluteTimeGetCurrent()
             let timestamp = (timestampCurr - timestampBeg)
 
-            if let sampleGSR = SignalAcquisition.readLastSample(for: .gsr) {
-                self.chartGSR.addSample(sampleGSR, sequenceTS: timestamp)
-            }
-            if let sampleBVP = SignalAcquisition.readLastSample(for: .bvp) {
-                self.chartBVP.addSample(sampleBVP, sequenceTS: timestamp)
-            }
-            if let sampleTemp = SignalAcquisition.readLastSample(for: .temperature) {
-                self.chartTemp.addSample(sampleTemp, sequenceTS: timestamp)
-            }
-            if let sampleIBI = SignalAcquisition.readLastSample(for: .ibi) {
-                self.chartIBI.addSample(sampleIBI, sequenceTS: timestamp)
-            }
-            if let sampleHR = SignalAcquisition.readLastSample(for: .heartRate) {
-                self.chartHR.addSample(sampleHR, sequenceTS: timestamp)
+            self.charts.forEach { signal, chart in
+                if let samples = SignalAcquisition.readLastSample(for: signal) {
+                    chart.addSample(samples, sequenceTS: timestamp)
+                }
             }
         }
         pollingTimer?.resume()
@@ -126,7 +122,7 @@ class DayViewController: UIViewController, StoreSubscriber {
     }
 
     @IBAction func clearPressed() {
-        charts.forEach { $0.clear() }
+        charts.values.forEach { $0.clear() }
         setChartsAppearance()
     }
 

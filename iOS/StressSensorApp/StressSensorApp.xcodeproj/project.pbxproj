@@ -19,6 +19,7 @@
 		231F4CC11FCF5F5000AE6881 /* StressSensorAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F4CC01FCF5F5000AE6881 /* StressSensorAppTests.swift */; };
 		231F4CCC1FCF5F5000AE6881 /* StressSensorAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F4CCB1FCF5F5000AE6881 /* StressSensorAppUITests.swift */; };
 		231F4CE01FCF6AB700AE6881 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231F4CDF1FCF6AB700AE6881 /* Constants.swift */; };
+		23356172225292B600A96748 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23356171225292B600A96748 /* Diary.swift */; };
 		23681E202037306900F39507 /* StressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23681E1F2037306900F39507 /* StressViewController.swift */; };
 		23681E22203787BD00F39507 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23681E21203787BD00F39507 /* Utilities.swift */; };
 		23681E252039FBF400F39507 /* ModelLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23681E242039FBF400F39507 /* ModelLogger.swift */; };
@@ -99,6 +100,7 @@
 		231F4CCD1FCF5F5000AE6881 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		231F4CDD1FCF60B100AE6881 /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		231F4CDF1FCF6AB700AE6881 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		23356171225292B600A96748 /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
 		23681E1F2037306900F39507 /* StressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StressViewController.swift; sourceTree = "<group>"; };
 		23681E21203787BD00F39507 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		23681E242039FBF400F39507 /* ModelLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLogger.swift; sourceTree = "<group>"; };
@@ -318,6 +320,7 @@
 			isa = PBXGroup;
 			children = (
 				23A31075222F4890004BC31A /* User.swift */,
+				23356171225292B600A96748 /* Diary.swift */,
 				23A3106E222C4A83004BC31A /* ConsentManager.swift */,
 				23A31070222DC1F1004BC31A /* AccountManager.swift */,
 				23A31073222F4776004BC31A /* FirebaseWrapper.swift */,
@@ -673,6 +676,7 @@
 				23B5DAA0202CFD9200D22352 /* SignalAcquisition.swift in Sources */,
 				231F4CAE1FCF5F5000AE6881 /* DayViewController.swift in Sources */,
 				231F4CAC1FCF5F5000AE6881 /* AppDelegate.swift in Sources */,
+				23356172225292B600A96748 /* Diary.swift in Sources */,
 				231F4CE01FCF6AB700AE6881 /* Constants.swift in Sources */,
 				2398C371220DF2350000800D /* QuadrantModel.swift in Sources */,
 				23681E202037306900F39507 /* StressViewController.swift in Sources */,

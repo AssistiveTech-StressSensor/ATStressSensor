@@ -32,7 +32,13 @@ class MonitorCell: Cell<String>, CellType {
         super.setup()
         selectionStyle = .none
         feedbackIcon.isHidden = true
-        height = { 72.0 }
+        height = { [weak self] in
+            var h: CGFloat = 50.5
+            if self?.energyLabel.isHidden == false {
+                h += 21.5
+            }
+            return h
+        }
     }
 
     func configure(for prediction: Prediction) {
@@ -45,11 +51,16 @@ class MonitorCell: Cell<String>, CellType {
         }
         stressLabel.text = "Stress level: \(stress)"
 
-        var energy = "Unknown"
-        if let phEnergy = prediction.physicalEnergy?.percentage {
-            energy = "\(round(max(min(phEnergy, 100.0), 0.0)))%"
+        if Constants.hideEnergyPredictions {
+            energyLabel.isHidden = true
+        } else {
+            energyLabel.isHidden = false
+            var energy = "Unknown"
+            if let phEnergy = prediction.physicalEnergy?.percentage {
+                energy = "\(round(max(min(phEnergy, 100.0), 0.0)))%"
+            }
+            energyLabel.text = "Energy level: \(energy)"
         }
-        energyLabel.text = "Energy level: \(energy)"
 
         let f = DateFormatter()
         f.dateStyle = .short

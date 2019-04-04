@@ -7,13 +7,24 @@
 //
 
 import FirebaseDatabase
+import PromiseKit
 
 
-private protocol LoggerEntry: Encodable {
+private protocol LoggerEntry: Codable {
     static var databaseLabel: String { get }
     var snapshot: SignalsSnapshot { get }
     var userID: String { get }
     var timestamp: TimeInterval { get }
+}
+
+private protocol CommentableLoggerEntry: LoggerEntry {
+    var comments: String? { get }
+}
+
+extension CommentableLoggerEntry {
+    func asDiaryEntry() -> Diary.Entry? {
+        return Diary.Entry(notes: comments, date: Date(timeIntervalSince1970: timestamp))
+    }
 }
 
 
@@ -38,7 +49,7 @@ class ModelLogger {
         return Firebase.collectedData(forUser: userID)
     }
 
-    private struct StressEntry: LoggerEntry {
+    private struct StressEntry: CommentableLoggerEntry {
         static let databaseLabel = "stress_data"
         let snapshot: SignalsSnapshot
         let userID: String
@@ -49,6 +60,7 @@ class ModelLogger {
         let sleepQuality: SleepQuality?
         let foodIntake: FoodIntake?
         let additionalNotes: String?
+        var comments: String? { return additionalNotes }
 
         enum CodingKeys: String, CodingKey {
             case snapshot
@@ -63,7 +75,7 @@ class ModelLogger {
         }
     }
 
-    private struct EnergyEntry: LoggerEntry {
+    private struct EnergyEntry: CommentableLoggerEntry {
         static let databaseLabel = "energy_data"
         let snapshot: SignalsSnapshot
         let userID: String
@@ -72,6 +84,7 @@ class ModelLogger {
         let sample: ModelSample
         let label: EnergyLevel
         let questionnaireResults: Questionnaire.Results
+        var comments: String? { return questionnaireResults.notes }
 
         enum CodingKeys: String, CodingKey {
             case snapshot
@@ -84,7 +97,7 @@ class ModelLogger {
         }
     }
 
-    private struct QuadrantEntry: LoggerEntry {
+    private struct QuadrantEntry: CommentableLoggerEntry {
         static let databaseLabel = "quadrant_data"
         let snapshot: SignalsSnapshot
         let userID: String
@@ -93,6 +106,7 @@ class ModelLogger {
         let sample: ModelSample
         let label: QuadrantValue
         let notes: String?
+        var comments: String? { return notes }
 
         enum CodingKeys: String, CodingKey {
             case snapshot
@@ -115,6 +129,36 @@ class ModelLogger {
             case snapshot
             case userID = "user_id"
             case timestamp
+        }
+    }
+
+    private static func pullData<T: LoggerEntry>(ofType type: T.Type) -> Promise<[T]> {
+        return Promise().compactMap {
+            self.userID
+        }.then {
+            Firebase.pullCollectedData(for: $0, dataType: T.databaseLabel)
+        }.compactMap {
+            Array($0.values) as? [[String: Any]]
+        }.map { rawEntries in
+            rawEntries.compactMap { $0["js_data"] as? String }
+        }.map { jsonEntries in
+            jsonEntries.compactMap { T.fromJSON($0) }
+        }
+    }
+
+    private static func pullCommentables<T: CommentableLoggerEntry>(ofType type: T.Type) -> Promise<[CommentableLoggerEntry]> {
+        return pullData(ofType: type).map { $0 as [CommentableLoggerEntry] }
+    }
+
+    static func pullDiary() -> Promise<[Diary.Entry]> {
+        return when(fulfilled: [
+            pullCommentables(ofType: StressEntry.self),
+            pullCommentables(ofType: QuadrantEntry.self),
+            pullCommentables(ofType: EnergyEntry.self),
+        ]).map {
+            $0.reduce([], +)
+        }.map {
+            $0.compactMap { $0.asDiaryEntry() }
         }
     }
 
@@ -184,6 +228,9 @@ class ModelLogger {
 
     private static func logEntry(_ entry: LoggerEntry) {
         guard canLog, let dataReference = dataReference else { return }
+        if let diaryEntry = (entry as? CommentableLoggerEntry)?.asDiaryEntry() {
+            try? Diary.log(diaryEntry)
+        }
         let dbLabel = type(of: entry).databaseLabel
         let entryRef = dataReference.child(dbLabel).childByAutoId()
         entryRef.updateChildValues([

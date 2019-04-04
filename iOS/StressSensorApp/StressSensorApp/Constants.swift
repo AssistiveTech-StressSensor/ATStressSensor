@@ -20,11 +20,17 @@ struct Constants {
 
     static let cooldownLength: TimeInterval = 2*60.0 // 2 minutes
 
+    static let hideEnergyPredictions: Bool = true
+
     static let documentsPath: String = {
         return NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
     }()
 
     static let predictionsPath: String = {
         return "\(Constants.documentsPath)/predictions.json"
+    }()
+
+    static let diaryPath: String = {
+        return "\(Constants.documentsPath)/diary.json"
     }()
 }

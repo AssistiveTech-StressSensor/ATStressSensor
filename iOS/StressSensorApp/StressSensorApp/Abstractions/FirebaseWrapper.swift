@@ -24,6 +24,24 @@ struct Firebase {
         return users.child("\(userID)/collected_data")
     }
 
+    static func pullCollectedData(for userID: String, dataType: String) -> Promise<[String: Any]> {
+        guard isSignedIn else {
+            return Promise(error: NSError(domain: "Not logged in", code: 1, userInfo: nil))
+        }
+        return Promise { seal in
+            let ref = collectedData(forUser: userID)
+            ref.child(dataType).observeSingleEvent(of: .value, with: { s in
+                if s.exists() == false {
+                    seal.fulfill([:])
+                } else if let value = s.value as? [String: Any] {
+                    seal.fulfill(value)
+                } else {
+                    seal.reject(NSError(domain: "Unknown", code: 1, userInfo: nil))
+                }
+            })
+        }
+    }
+
     static func signIn(email: String, password: String) -> Promise<String> {
         return Promise { seal in
             Auth.auth().signIn(

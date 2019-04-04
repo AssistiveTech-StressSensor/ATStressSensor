@@ -7,6 +7,33 @@
 //
 
 import UIKit
+import PromiseKit
+
+
+class DiaryCell: UITableViewCell {
+    static let cellID = "DiaryCellID"
+
+    @IBOutlet private weak var commentsLabel: UILabel!
+    @IBOutlet private weak var dateLabel: UILabel!
+
+    static func dequeue(for tableView: UITableView, at indexPath: IndexPath) -> DiaryCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
+        return cell as! DiaryCell
+    }
+
+    func configure(for entry: Diary.Entry) {
+        selectionStyle = .none
+
+        let f = DateFormatter()
+        f.dateStyle = .short
+        f.timeStyle = .short
+        f.doesRelativeDateFormatting = true
+        f.locale = Locale(identifier: "en")
+        dateLabel.text = f.string(from: entry.date)
+
+        commentsLabel.text = entry.notes
+    }
+}
 
 
 struct Prediction: Codable {
@@ -33,6 +60,13 @@ struct Prediction: Codable {
     }
 }
 
+protocol DateSortable {
+    var date: Date { get }
+}
+
+extension Prediction: DateSortable {}
+extension Diary.Entry: DateSortable {}
+
 
 extension Array where Element == Prediction {
 
@@ -47,7 +81,10 @@ extension Array where Element == Prediction {
 
 class MonitorViewController: UITableViewController {
 
+    private var tableEntries: [DateSortable] = []
     private var predictions = [Prediction].load()
+    private var diaryEntries: [Diary.Entry] { return Diary.content.entries }
+    private var diaryPromise: Promise<Void>?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,17 +92,20 @@ class MonitorViewController: UITableViewController {
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action:#selector(MonitorViewController.refresh(_:)), for: .valueChanged)
 
-        setNeedsBackgroundUpdate()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 44
+
         MonitorCell.register(for: tableView)
     }
 
-    fileprivate func setNeedsBackgroundUpdate() {
-        if predictions.isEmpty {
-            tableView.backgroundView = SimpleTableBackgroundView(frame: view.bounds, title: "Pull to predict!")
-            tableView.separatorStyle = .none
-        } else {
-            tableView.backgroundView = nil
-            tableView.separatorStyle = .singleLine
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.updateTable()
+        if diaryPromise == nil || diaryPromise!.isRejected {
+            diaryPromise = Diary.load()
+            diaryPromise?.ensure {
+                self.updateTable()
+            }.cauterize()
         }
     }
 
@@ -96,17 +136,15 @@ class MonitorViewController: UITableViewController {
         predictions[index] = newPrediction
         try? predictions.save()
         ModelLogger.logPrediction(newPrediction)
-        tableView.reloadData()
+        updateTable()
     }
 
     fileprivate func addPrediction(_ prediction: Prediction, snapshot: SignalsSnapshot?) {
         predictions.append(prediction)
         try? predictions.save()
         ModelLogger.logPrediction(prediction, snapshot: snapshot)
-
         refreshControl?.endRefreshing()
-        setNeedsBackgroundUpdate()
-        tableView.reloadData()
+        updateTable()
     }
 
     @objc
@@ -153,12 +191,22 @@ class MonitorViewController: UITableViewController {
 
 extension MonitorViewController {
 
-    fileprivate func predictionIndex(for indexPath: IndexPath) -> Int {
-        return predictions.count - 1 - indexPath.row
+    fileprivate func updateTable() {
+        let a = predictions as [DateSortable]
+        let b = diaryEntries as [DateSortable]
+        tableEntries = (a + b).sorted { $0.date > $1.date }
+        tableView.reloadData()
+        setNeedsBackgroundUpdate()
     }
 
-    fileprivate func prediction(for indexPath: IndexPath) -> Prediction {
-        return predictions[predictionIndex(for: indexPath)]
+    private func setNeedsBackgroundUpdate() {
+        if tableEntries.isEmpty {
+            tableView.backgroundView = SimpleTableBackgroundView(frame: view.bounds, title: "Pull to predict!")
+            tableView.separatorStyle = .none
+        } else {
+            tableView.backgroundView = nil
+            tableView.separatorStyle = .singleLine
+        }
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -166,33 +214,51 @@ extension MonitorViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return predictions.count
+        return tableEntries.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return MonitorCell.dequeue(for: tableView, at: indexPath)
-    }
-
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        (cell as! MonitorCell).configure(for: prediction(for: indexPath))
+        let entry = tableEntries[indexPath.row]
+        if let prediction = entry as? Prediction {
+            let cell = MonitorCell.dequeue(for: tableView, at: indexPath)
+            cell.configure(for: prediction)
+            return cell
+        } else if let diaryEntry = entry as? Diary.Entry {
+            let cell = DiaryCell.dequeue(for: tableView, at: indexPath)
+            cell.configure(for: diaryEntry)
+            return cell
+        } else {
+            fatalError("Not implemented!")
+        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        var pred = prediction(for: indexPath)
-        let predIndex = predictionIndex(for: indexPath)
+        if var prediction = tableEntries[indexPath.row] as? Prediction {
 
-        let vc = FeedbackViewController.instantiate()
-        vc.configure(with: pred) { [weak self] confirmed, feedback in
-            if confirmed {
-                pred.feedback = feedback
-                self?.modifyPrediction(pred, index: predIndex)
+            let allPredictions = predictions
+            let vc = FeedbackViewController.instantiate()
+            vc.configure(with: prediction) { [weak self] confirmed, feedback in
+                if confirmed {
+                    prediction.feedback = feedback
+
+                    OperationQueue().addOperation {
+                        let index = allPredictions.firstIndex { $0.identifier == prediction.identifier }
+                        OperationQueue.main.addOperation {
+                            if index != nil {
+                                self?.modifyPrediction(prediction, index: index!)
+                            }
+                            vc.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                } else {
+                    vc.dismiss(animated: true, completion: nil)
+                }
             }
-            vc.dismiss(animated: true, completion: nil)
-        }
 
-        let nav = UINavigationController(rootViewController: vc)
-        present(nav, animated: true, completion: nil)
+            let nav = UINavigationController(rootViewController: vc)
+            present(nav, animated: true, completion: nil)
+        }
     }
 }

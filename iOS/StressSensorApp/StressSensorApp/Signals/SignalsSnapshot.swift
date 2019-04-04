@@ -8,7 +8,7 @@
 
 import Foundation
 
-class SignalsSnapshot: Encodable {
+class SignalsSnapshot: Codable {
 
     let gsrSamples: [Double]
     let hrSamples: [Double]

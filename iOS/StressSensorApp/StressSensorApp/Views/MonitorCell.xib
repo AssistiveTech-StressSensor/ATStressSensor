@@ -40,12 +40,11 @@
                     </subviews>
                 </stackView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="✍️" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q8Z-OH-tww">
-                    <rect key="frame" x="268" y="17.5" width="36" height="36"/>
+                    <rect key="frame" x="275" y="21" width="29" height="29"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="36" id="BsN-fM-C29"/>
                         <constraint firstAttribute="width" secondItem="Q8Z-OH-tww" secondAttribute="height" multiplier="1:1" id="eda-FP-dT8"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="24"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -54,7 +53,8 @@
             <constraints>
                 <constraint firstItem="Q8Z-OH-tww" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="43d-xy-lOY"/>
                 <constraint firstItem="xPV-y6-g5U" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="48J-2v-u2y"/>
-                <constraint firstItem="xPV-y6-g5U" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="A4B-go-HzP"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="xPV-y6-g5U" secondAttribute="bottom" constant="7.5" id="7bo-TQ-cQG"/>
+                <constraint firstItem="xPV-y6-g5U" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="8" id="F4a-ff-JqV"/>
                 <constraint firstItem="Q8Z-OH-tww" firstAttribute="width" secondItem="Q8Z-OH-tww" secondAttribute="height" id="eve-iM-czt"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Q8Z-OH-tww" secondAttribute="trailing" constant="16" id="jI7-SN-Ehy"/>
             </constraints>
